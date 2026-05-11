@@ -40,17 +40,18 @@ const VOICECLUB_CONFIG = {
   placeholderAvatar: 'assets/images/placeholder-avatar.svg',
 
   // Practice page — vocal warm-up videos
-  // To find a video ID: open the YouTube video, copy the part after "v=" in the URL.
-  // Example: youtube.com/watch?v=ABC123  →  videoId: 'ABC123'
-  // Leave videoId empty ('') to fall back to a YouTube search for that duration.
+  // Paste the full YouTube URL for each duration, e.g.:
+  //   url: 'https://www.youtube.com/watch?v=ABC123'
+  // Supports youtube.com/watch?v=…, youtu.be/…, or youtube.com/embed/…
+  // Leave url empty ('') and the button will be greyed out until filled in.
   practice: {
     warmupVideos: [
-      { label: '5 min',  videoId: '' },
-      { label: '10 min', videoId: '' },
-      { label: '15 min', videoId: '' },
-      { label: '20 min', videoId: '' },
-      { label: '30 min', videoId: '' },
-      { label: '40 min', videoId: '' },
+      { label: '5 min',  url: '' },
+      { label: '10 min', url: '' },
+      { label: '15 min', url: '' },
+      { label: '20 min', url: '' },
+      { label: '30 min', url: '' },
+      { label: '40 min', url: '' },
     ],
   },
 };

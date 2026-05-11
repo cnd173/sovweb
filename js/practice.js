@@ -150,15 +150,37 @@
   //  VOCAL WARM-UP
   // ══════════════════════════════════════════════════════════════
 
+  /**
+   * Extract an 11-character YouTube video ID from any of these formats:
+   *   https://www.youtube.com/watch?v=ID
+   *   https://youtu.be/ID
+   *   https://www.youtube.com/embed/ID
+   *   Just the raw ID itself (11 chars)
+   * Returns null if nothing recognisable is found.
+   */
+  function extractYouTubeId(url) {
+    if (!url) return null;
+    url = url.trim();
+    // Already a bare ID (11 alphanumeric/dash/underscore chars)
+    if (/^[a-zA-Z0-9_-]{11}$/.test(url)) return url;
+    const m = url.match(/(?:youtube\.com\/(?:watch\?(?:.*&)?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
+    return m ? m[1] : null;
+  }
+
   const warmupVideos = (VOICECLUB_CONFIG.practice || {}).warmupVideos || [];
   const warmupGrid   = document.getElementById('warmup-grid');
 
-  // Render buttons from config
-  warmupGrid.innerHTML = warmupVideos.map(v => `
-    <button class="warmup-btn" data-video-id="${escHtml(v.videoId || '')}" data-label="${escHtml(v.label)}">
-      <span class="warmup-btn__play">▶</span>
+  // Render buttons — grey out ones with no URL configured yet
+  warmupGrid.innerHTML = warmupVideos.map(v => {
+    const id       = extractYouTubeId(v.url || '');
+    const disabled = id ? '' : ' warmup-btn--empty';
+    const title    = id ? '' : ` title="Add a YouTube URL for this duration in js/config.js"`;
+    return `
+    <button class="warmup-btn${disabled}"${title} data-yt-id="${escHtml(id || '')}" data-label="${escHtml(v.label)}">
+      <span class="warmup-btn__play">${id ? '▶' : '＋'}</span>
       <span class="warmup-btn__label">${escHtml(v.label)}</span>
-    </button>`).join('');
+    </button>`;
+  }).join('');
 
   // YouTube modal
   const modal    = document.getElementById('warmup-modal');
@@ -167,17 +189,11 @@
 
   warmupGrid.querySelectorAll('.warmup-btn').forEach(btn => {
     btn.addEventListener('click', () => {
-      const id    = btn.dataset.videoId;
-      const label = btn.dataset.label;
-      if (id) {
-        iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
-        modal.classList.add('modal--open');
-        document.body.style.overflow = 'hidden';
-      } else {
-        // Fallback: YouTube search
-        const q = encodeURIComponent(`vocal warm up ${label}`);
-        window.open(`https://www.youtube.com/results?search_query=${q}`, '_blank', 'noopener noreferrer');
-      }
+      const id = btn.dataset.ytId;
+      if (!id) return;  // not configured yet — do nothing
+      iframe.src = `https://www.youtube.com/embed/${id}?autoplay=1&rel=0`;
+      modal.classList.add('modal--open');
+      document.body.style.overflow = 'hidden';
     });
   });
 
