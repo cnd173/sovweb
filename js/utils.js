@@ -132,6 +132,18 @@ function dayNum(str) {
   return d.getDate();
 }
 
+/**
+ * Convert a Google Drive sharing URL to a directly embeddable image URL.
+ * Handles: https://drive.google.com/file/d/FILE_ID/view?...
+ * Falls back to the placeholder avatar if url is empty.
+ */
+function resolvePhotoUrl(url) {
+  if (!url) return VOICECLUB_CONFIG.placeholderAvatar;
+  const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
+  if (match) return `https://lh3.googleusercontent.com/d/${match[1]}`;
+  return url;
+}
+
 /** Escape HTML to prevent XSS. */
 function escHtml(str) {
   return String(str)

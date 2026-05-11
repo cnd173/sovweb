@@ -113,9 +113,7 @@
     const barPct      = groupBest > 0 && s.best !== null ? Math.round((s.best / groupBest) * 100) : 0;
     const noData      = s.best === null;
 
-    const photoSrc = s.photoUrl
-      ? escHtml(s.photoUrl)
-      : escHtml(VOICECLUB_CONFIG.placeholderAvatar);
+    const photoSrc = escHtml(resolvePhotoUrl(s.photoUrl));
 
     const improvementChip = (() => {
       if (s.improvement === null) return '';

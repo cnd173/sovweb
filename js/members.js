@@ -129,15 +129,6 @@
       </div>`;
   }
 
-  /** Convert a Google Drive sharing URL to a direct image URL, or return the URL as-is. */
-  function resolvePhotoUrl(url) {
-    if (!url) return VOICECLUB_CONFIG.placeholderAvatar;
-    // https://drive.google.com/file/d/FILE_ID/view?...  →  direct content URL (no auth redirect)
-    const match = url.match(/\/file\/d\/([a-zA-Z0-9_-]+)/);
-    if (match) return `https://lh3.googleusercontent.com/d/${match[1]}`;
-    return url;
-  }
-
   function memberCard(m) {
     const photoSrc = escHtml(resolvePhotoUrl(m.photoUrl));
 
