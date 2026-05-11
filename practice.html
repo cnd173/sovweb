@@ -1,0 +1,486 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" href="assets/images/favicon.svg" type="image/svg+xml" />
+  <title>Practice — Soul of Voice Club</title>
+  <meta name="description" content="Breathing exercises and vocal warm-ups for Soul of Voice Club members." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Practice — Soul of Voice Club" />
+  <meta property="og:description" content="Breathing exercises and vocal warm-ups." />
+  <meta property="og:type" content="website" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/main.css" />
+
+  <style>
+    /* ── Practice sections ─────────────────────────────────── */
+    .practice-section {
+      max-width: 600px;
+      margin: 0 auto var(--space-16);
+      text-align: center;
+    }
+
+    .practice-section__title {
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: var(--space-2);
+    }
+
+    .practice-section__desc {
+      color: var(--color-text-muted);
+      font-size: 0.95rem;
+      margin-bottom: var(--space-7);
+    }
+
+    /* ── Breathing triangle ────────────────────────────────── */
+    .breath-svg {
+      width: 100%;
+      max-width: 300px;
+      display: block;
+      margin: 0 auto var(--space-5);
+    }
+
+    .tri-base {
+      fill: none;
+      stroke: var(--color-border);
+      stroke-width: 2.5;
+      stroke-linejoin: round;
+    }
+
+    .tri-progress {
+      stroke-width: 5;
+      stroke-linecap: round;
+      fill: none;
+    }
+
+    .tri-dot {
+      fill: var(--color-primary);
+      transition: fill 0.35s ease;
+    }
+
+    .tri-phase-text {
+      font-family: var(--font-display);
+      font-size: 2.2rem;
+      font-weight: 700;
+      fill: var(--color-text);
+    }
+
+    .tri-count-text {
+      font-family: var(--font-body);
+      font-size: 1.5rem;
+      font-weight: 600;
+      fill: var(--color-text-muted);
+    }
+
+    .tri-hint {
+      font-family: var(--font-body);
+      font-size: 0.72rem;
+      font-weight: 600;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      fill: var(--color-text-muted);
+      opacity: 0.7;
+    }
+
+    /* ── Presets ───────────────────────────────────────────── */
+    .breath-presets {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-5);
+    }
+
+    .breath-preset {
+      background: var(--color-surface);
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-pill);
+      padding: var(--space-2) var(--space-4);
+      font-size: 0.875rem;
+      font-family: var(--font-body);
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .breath-preset:hover,
+    .breath-preset.active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    /* ── Timing adjusters ──────────────────────────────────── */
+    .timing-row {
+      display: flex;
+      justify-content: center;
+      gap: var(--space-7);
+      flex-wrap: wrap;
+      margin-bottom: var(--space-7);
+    }
+
+    .timing-group {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .timing-group__label {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    .timing-controls {
+      display: flex;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .timing-adj {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 1.5px solid var(--color-border);
+      background: var(--color-surface);
+      font-size: 1.1rem;
+      line-height: 1;
+      cursor: pointer;
+      color: var(--color-text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: border-color 0.15s, color 0.15s;
+    }
+    .timing-adj:hover { border-color: var(--color-primary); color: var(--color-primary); }
+
+    .timing-val {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--color-text);
+      min-width: 1.6rem;
+      text-align: center;
+    }
+
+    .timing-unit {
+      font-size: 0.78rem;
+      color: var(--color-text-muted);
+    }
+
+    /* Start button */
+    #breath-start-btn[data-active] {
+      background: var(--color-text-muted);
+      border-color: var(--color-text-muted);
+    }
+
+    /* ── Warm-up grid ──────────────────────────────────────── */
+    .warmup-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-4);
+      max-width: 480px;
+      margin: 0 auto;
+    }
+
+    .warmup-btn {
+      background: var(--color-surface);
+      border: 1.5px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-5) var(--space-3);
+      cursor: pointer;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+      font-family: var(--font-body);
+      box-shadow: var(--shadow-card);
+      transition: transform 0.18s, box-shadow 0.18s, border-color 0.15s;
+    }
+
+    .warmup-btn:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+      border-color: var(--color-primary);
+    }
+
+    .warmup-btn__play {
+      font-size: 1.5rem;
+      color: var(--color-primary);
+      line-height: 1;
+    }
+
+    .warmup-btn__label {
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    /* ── YouTube modal ─────────────────────────────────────── */
+    .modal {
+      position: fixed;
+      inset: 0;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.25s;
+    }
+
+    .modal--open {
+      opacity: 1;
+      pointer-events: all;
+    }
+
+    .modal__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+    }
+
+    .modal__box {
+      position: relative;
+      z-index: 1;
+      width: min(92vw, 860px);
+    }
+
+    .modal__close {
+      position: absolute;
+      top: -2.4rem;
+      right: 0;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.5rem;
+      cursor: pointer;
+      opacity: 0.75;
+      line-height: 1;
+    }
+    .modal__close:hover { opacity: 1; }
+
+    .modal__video {
+      position: relative;
+      padding-bottom: 56.25%;
+      height: 0;
+      background: #000;
+      border-radius: var(--radius-md);
+      overflow: hidden;
+    }
+
+    .modal__video iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .warmup-grid { grid-template-columns: repeat(2, 1fr); }
+      .timing-row  { gap: var(--space-5); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .warmup-btn { transition: none; }
+      .warmup-btn:hover { transform: none; }
+      .tri-dot { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<noscript>
+  <div class="noscript-msg">This website requires JavaScript. Please enable JavaScript in your browser.</div>
+</noscript>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="container nav__inner">
+    <a href="index.html" class="nav__logo">🎙 <span>Soul of</span> Voice Club</a>
+    <div class="nav__links">
+      <a href="index.html">Home</a>
+      <a href="members.html">Members</a>
+      <a href="board.html">Progress Board</a>
+      <a href="schedule.html">Schedule</a>
+      <a href="finance.html">Finance</a>
+      <a href="rules.html">Rules</a>
+      <a href="practice.html" class="active">Practice</a>
+      <a href="photos.html">Photos &amp; Videos</a>
+    </div>
+    <button class="nav__hamburger" aria-label="Open navigation menu" aria-expanded="false" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav__mobile" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+    <a href="index.html">Home</a>
+    <a href="members.html">Members</a>
+    <a href="board.html">Progress Board</a>
+    <a href="schedule.html">Schedule</a>
+    <a href="finance.html">Finance</a>
+    <a href="rules.html">Rules</a>
+    <a href="practice.html" class="active">Practice</a>
+    <a href="photos.html">Photos &amp; Videos</a>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <header class="page-header">
+      <h1>Practice</h1>
+      <p>Train your breath and warm up your voice.</p>
+    </header>
+
+    <!-- ── SECTION 1: Breathing ─────────────────────────── -->
+    <section class="practice-section">
+      <h2 class="practice-section__title">🌬️ Breathing</h2>
+      <p class="practice-section__desc">Follow the dot around the triangle and breathe with it.</p>
+
+      <!-- Triangle SVG -->
+      <svg class="breath-svg" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" aria-label="Breathing triangle">
+        <defs>
+          <filter id="dot-glow" x="-60%" y="-60%" width="220%" height="220%">
+            <feGaussianBlur in="SourceGraphic" stdDeviation="5" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- Base triangle outline -->
+        <polygon class="tri-base" points="150,24 284,258 16,258"/>
+
+        <!-- Phase progress lines (each grows as its phase plays) -->
+        <line id="progress-inhale" class="tri-progress" stroke="#81B29A" x1="16" y1="258" x2="16" y2="258" stroke-linecap="round"/>
+        <line id="progress-hold"   class="tri-progress" stroke="#F2CC8F" x1="150" y1="24"  x2="150" y2="24"  stroke-linecap="round"/>
+        <line id="progress-exhale" class="tri-progress" stroke="#E07A5F" x1="284" y1="258" x2="284" y2="258" stroke-linecap="round"/>
+
+        <!-- Side hint labels (outside edges) -->
+        <text class="tri-hint" x="52"  y="148" text-anchor="middle" transform="rotate(-61,52,148)" fill="#81B29A">INHALE</text>
+        <text class="tri-hint" x="248" y="148" text-anchor="middle" transform="rotate(61,248,148)"  fill="#F2CC8F">HOLD</text>
+        <text class="tri-hint" x="150" y="282" text-anchor="middle"                                 fill="#E07A5F">EXHALE</text>
+
+        <!-- Centre: phase name -->
+        <text id="breath-phase-label" class="tri-phase-text" x="150" y="160" text-anchor="middle" dominant-baseline="middle">Ready</text>
+        <!-- Centre: countdown number -->
+        <text id="breath-countdown"   class="tri-count-text" x="150" y="202" text-anchor="middle" dominant-baseline="middle"></text>
+
+        <!-- Animated dot -->
+        <circle id="breath-dot" class="tri-dot" cx="16" cy="258" r="11"/>
+      </svg>
+
+      <!-- Presets -->
+      <div class="breath-presets">
+        <button class="breath-preset active" data-inhale="4" data-hold="4" data-exhale="4">4 – 4 – 4 &nbsp;Box</button>
+        <button class="breath-preset"        data-inhale="4" data-hold="7" data-exhale="8">4 – 7 – 8 &nbsp;Calm</button>
+        <button class="breath-preset"        data-inhale="5" data-hold="5" data-exhale="5">5 – 5 – 5</button>
+        <button class="breath-preset"        data-inhale="6" data-hold="2" data-exhale="6">6 – 2 – 6 &nbsp;Active</button>
+      </div>
+
+      <!-- Custom timing adjusters -->
+      <div class="timing-row">
+        <div class="timing-group">
+          <span class="timing-group__label" style="color:#81B29A">Inhale</span>
+          <div class="timing-controls">
+            <button class="timing-adj" data-phase="0" data-delta="-1" aria-label="Decrease inhale">−</button>
+            <span class="timing-val" data-phase="0">4</span><span class="timing-unit">s</span>
+            <button class="timing-adj" data-phase="0" data-delta="1"  aria-label="Increase inhale">+</button>
+          </div>
+        </div>
+        <div class="timing-group">
+          <span class="timing-group__label" style="color:#F2CC8F">Hold</span>
+          <div class="timing-controls">
+            <button class="timing-adj" data-phase="1" data-delta="-1" aria-label="Decrease hold">−</button>
+            <span class="timing-val" data-phase="1">4</span><span class="timing-unit">s</span>
+            <button class="timing-adj" data-phase="1" data-delta="1"  aria-label="Increase hold">+</button>
+          </div>
+        </div>
+        <div class="timing-group">
+          <span class="timing-group__label" style="color:#E07A5F">Exhale</span>
+          <div class="timing-controls">
+            <button class="timing-adj" data-phase="2" data-delta="-1" aria-label="Decrease exhale">−</button>
+            <span class="timing-val" data-phase="2">4</span><span class="timing-unit">s</span>
+            <button class="timing-adj" data-phase="2" data-delta="1"  aria-label="Increase exhale">+</button>
+          </div>
+        </div>
+      </div>
+
+      <button class="btn btn-primary" id="breath-start-btn">Start</button>
+    </section>
+
+    <!-- ── SECTION 2: Vocal Warm-Up ─────────────────────── -->
+    <section class="practice-section">
+      <h2 class="practice-section__title">🎤 Vocal Warm-Up</h2>
+      <p class="practice-section__desc">Choose how long you want to warm up. A video will open for you.</p>
+
+      <div class="warmup-grid" id="warmup-grid"></div>
+    </section>
+
+  </div><!-- /container -->
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <p class="footer__name">🎙 Soul of Voice Club</p>
+    <p>A community built on sound and story.</p>
+    <div class="footer__links">
+      <a href="index.html">Home</a>
+      <a href="members.html">Members</a>
+      <a href="board.html">Progress Board</a>
+      <a href="schedule.html">Schedule</a>
+      <a href="finance.html">Finance</a>
+      <a href="rules.html">Rules</a>
+      <a href="practice.html">Practice</a>
+      <a href="photos.html">Photos &amp; Videos</a>
+    </div>
+    <p class="footer__copy">© 2026 Soul of Voice Club</p>
+  </div>
+</footer>
+
+<!-- YouTube modal -->
+<div id="warmup-modal" class="modal" role="dialog" aria-modal="true" aria-label="Vocal warm-up video">
+  <div class="modal__backdrop"></div>
+  <div class="modal__box">
+    <button class="modal__close" id="warmup-close" aria-label="Close video">✕</button>
+    <div class="modal__video">
+      <iframe
+        id="warmup-iframe"
+        src=""
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+        allowfullscreen
+        title="Vocal warm-up video"
+      ></iframe>
+    </div>
+  </div>
+</div>
+
+<!-- Scripts -->
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/practice.js"></script>
+
+<script>
+  const hamburger  = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', isOpen);
+  });
+</script>
+</body>
+</html>
