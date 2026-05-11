@@ -117,23 +117,33 @@
   }
 
   // ── Orientation detection ─────────────────────────────────
-  // After thumbnails load, apply landscape/portrait classes based on natural dimensions.
+  // Videos: always landscape 16:9. Phone cameras store rotation as metadata so
+  // the raw thumbnail pixels are often portrait even for landscape recordings —
+  // thumbnail dimensions can't be trusted for videos.
+  //
+  // Photos: detect orientation from the thumbnail's natural pixel dimensions.
   function applyAspectDetection() {
-    root.querySelectorAll('.photo-card__thumb img').forEach(img => {
+
+    // ── Videos → always landscape ────────────────────────────
+    root.querySelectorAll('.photo-card--video').forEach(card => {
+      card.classList.add('photo-card--landscape');
+      card.querySelector('.photo-card__thumb')?.classList.add('thumb--landscape');
+    });
+
+    // ── Photos → detect from thumbnail pixels ────────────────
+    root.querySelectorAll('.photo-card[data-type="image"] .photo-card__thumb img').forEach(img => {
       function detect() {
         const w = img.naturalWidth;
         const h = img.naturalHeight;
-        if (!w || !h) return;                          // no data yet
+        if (!w || !h) return;
         const thumb = img.closest('.photo-card__thumb');
         const card  = img.closest('.photo-card');
         if (!thumb || !card) return;
 
         if (w > h * 1.15) {
-          // Landscape — span 2 columns, 16:9 thumb
           card.classList.add('photo-card--landscape');
           thumb.classList.add('thumb--landscape');
         } else if (h > w * 1.15) {
-          // Portrait — 9:16 thumb
           card.classList.add('photo-card--portrait');
           thumb.classList.add('thumb--portrait');
         }
@@ -141,10 +151,10 @@
       }
 
       if (img.complete && img.naturalWidth) {
-        detect();           // already loaded (cached)
+        detect();
       } else {
         img.addEventListener('load', detect);
-        img.addEventListener('error', () => {});       // ignore broken images
+        img.addEventListener('error', () => {});
       }
     });
   }
