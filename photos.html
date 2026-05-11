@@ -217,6 +217,15 @@
       aspect-ratio: 9 / 16;
     }
 
+    /* ── Thumbnail rotation (video rotation metadata) ──────
+       For 90/270° the image is landscape pixels displayed in
+       a landscape container, but the content is sideways.
+       Rotating + scaling by 16/9 makes the subject fill the frame.
+    ─────────────────────────────────────────────────────── */
+    .photo-card__thumb img.rotate-90  { transform: rotate(90deg)  scale(1.778); }
+    .photo-card__thumb img.rotate-180 { transform: rotate(180deg); }
+    .photo-card__thumb img.rotate-270 { transform: rotate(270deg) scale(1.778); }
+
     /* ── Responsive ────────────────────────────────────── */
     @media (max-width: 480px) {
       .photo-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }

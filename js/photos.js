@@ -90,15 +90,19 @@
     const thumbSrc = f.thumbnailLink
       ? f.thumbnailLink.replace(/=s\d+$/, '=s400')
       : `https://lh3.googleusercontent.com/d/${f.id}=s400`;
-    const label   = escHtml(f.name.replace(/\.[^.]+$/, '')); // used for alt/title only
-    const dateStr = f.createdTime ? formatDate(f.createdTime.slice(0, 10)) : '';
-    const caption = dateStr ? `<div class="photo-card__date">${dateStr}</div>` : '';
+    const label    = escHtml(f.name.replace(/\.[^.]+$/, '')); // used for alt/title only
+    const dateStr  = f.createdTime ? formatDate(f.createdTime.slice(0, 10)) : '';
+    const caption  = dateStr ? `<div class="photo-card__date">${dateStr}</div>` : '';
+
+    // Rotation class from videoMediaMetadata.rotation (0, 90, 180, 270)
+    const rot      = f.rotation || 0;
+    const rotClass = rot ? ` rotate-${rot}` : '';
 
     if (isVideo) {
       return `
         <a class="photo-card photo-card--video" href="https://drive.google.com/file/d/${f.id}/view" target="_blank" rel="noopener noreferrer" title="${label}">
           <div class="photo-card__thumb">
-            <img src="${escHtml(thumbSrc)}" alt="${label}" loading="lazy" onerror="this.closest('.photo-card__thumb').classList.add('no-thumb')"/>
+            <img src="${escHtml(thumbSrc)}" alt="${label}" loading="lazy" class="${rotClass.trim()}" onerror="this.closest('.photo-card__thumb').classList.add('no-thumb')"/>
             <div class="photo-card__play">▶</div>
           </div>
           ${caption}
