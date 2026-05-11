@@ -1,11 +1,11 @@
 // ─────────────────────────────────────────────────────────────────────────────
-// VOICE CLUB — Configuration (CLB SOV)
-// Spreadsheet: CLB SOV  |  Published via File > Share > Publish to the web
+// VOICE CLUB — Configuration (Soul of Voice Club)
+// Spreadsheet: Soul of Voice Club  |  Published via File > Share > Publish to the web
 // ─────────────────────────────────────────────────────────────────────────────
 
 const VOICECLUB_CONFIG = {
   site: {
-    name: 'CLB SOV',
+    name: 'Soul of Voice Club',
     tagline: 'A community built on sound and story.',
     contact: '',
     socialLinks: [],
