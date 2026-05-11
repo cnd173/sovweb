@@ -301,6 +301,86 @@
       border: none;
     }
 
+    /* ── Exhale timer ──────────────────────────────────────── */
+    .exhale-timer {
+      margin-top: var(--space-10);
+      padding-top: var(--space-8);
+      border-top: 1px solid var(--color-border);
+    }
+
+    .exhale-timer__title {
+      font-family: var(--font-display);
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: var(--color-text);
+      margin-bottom: var(--space-2);
+    }
+
+    .exhale-timer__desc {
+      font-size: 0.88rem;
+      color: var(--color-text-muted);
+      margin-bottom: var(--space-6);
+    }
+
+    .exhale-display {
+      display: flex;
+      align-items: baseline;
+      justify-content: center;
+      gap: var(--space-2);
+      margin-bottom: var(--space-5);
+      line-height: 1;
+    }
+
+    .exhale-display__time {
+      font-family: var(--font-display);
+      font-size: 4.5rem;
+      font-weight: 700;
+      color: var(--color-text);
+      min-width: 5ch;
+      text-align: center;
+      transition: color 0.3s;
+    }
+
+    .exhale-display__time.running { color: var(--color-secondary); }
+
+    .exhale-display__unit {
+      font-size: 1.4rem;
+      color: var(--color-text-muted);
+      font-weight: 400;
+      padding-bottom: 0.2em;
+    }
+
+    .exhale-result {
+      margin-top: var(--space-5);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-2);
+    }
+
+    .exhale-result__label {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      font-weight: 600;
+      color: var(--color-text-muted);
+    }
+
+    .exhale-result__value {
+      font-family: var(--font-display);
+      font-size: 2rem;
+      font-weight: 700;
+      color: var(--color-secondary);
+    }
+
+    .exhale-result__best {
+      font-size: 0.82rem;
+      color: var(--color-text-muted);
+      background: var(--color-surface-alt);
+      border-radius: var(--radius-pill);
+      padding: var(--space-1) var(--space-3);
+    }
+
     /* ── Responsive ────────────────────────────────────────── */
     @media (max-width: 480px) {
       .warmup-grid { grid-template-columns: repeat(2, 1fr); }
@@ -430,6 +510,25 @@
       </div>
 
       <button class="btn btn-primary" id="breath-start-btn">Start</button>
+
+      <!-- Exhale timer -->
+      <div class="exhale-timer">
+        <h3 class="exhale-timer__title">⏱️ Measure Your Exhale</h3>
+        <p class="exhale-timer__desc">Press Start, exhale as long as you can, then press Stop.</p>
+
+        <div class="exhale-display">
+          <span class="exhale-display__time" id="exhale-time">0.0</span>
+          <span class="exhale-display__unit">sec</span>
+        </div>
+
+        <button class="btn btn-outline" id="exhale-btn">Start</button>
+
+        <div class="exhale-result" id="exhale-result" hidden>
+          <span class="exhale-result__label">Your exhale</span>
+          <span class="exhale-result__value" id="exhale-result-val"></span>
+          <span class="exhale-result__best" id="exhale-best" hidden></span>
+        </div>
+      </div>
     </section>
 
     <!-- ── SECTION 2: Vocal Warm-Up ─────────────────────── -->

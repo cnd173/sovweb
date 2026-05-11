@@ -147,6 +147,67 @@
 
 
   // ══════════════════════════════════════════════════════════════
+  //  EXHALE TIMER
+  // ══════════════════════════════════════════════════════════════
+
+  const exhaleTimeEl  = document.getElementById('exhale-time');
+  const exhaleBtn     = document.getElementById('exhale-btn');
+  const exhaleResult  = document.getElementById('exhale-result');
+  const exhaleResVal  = document.getElementById('exhale-result-val');
+  const exhaleBestEl  = document.getElementById('exhale-best');
+
+  let exhaleRunning = false;
+  let exhaleStartTs = null;
+  let exhaleRafId   = null;
+  let exhaleBest    = 0;
+
+  function exhaleFrame(ts) {
+    if (exhaleStartTs === null) exhaleStartTs = ts;
+    const secs = (ts - exhaleStartTs) / 1000;
+    exhaleTimeEl.textContent = secs.toFixed(1);
+    if (exhaleRunning) exhaleRafId = requestAnimationFrame(exhaleFrame);
+  }
+
+  exhaleBtn.addEventListener('click', () => {
+    if (!exhaleRunning) {
+      // ── Start ──
+      exhaleRunning  = true;
+      exhaleStartTs  = null;
+      exhaleTimeEl.textContent = '0.0';
+      exhaleTimeEl.classList.add('running');
+      exhaleResult.hidden = true;
+      exhaleBtn.textContent = 'Stop';
+      exhaleBtn.classList.add('btn-primary');
+      exhaleBtn.classList.remove('btn-outline');
+      exhaleRafId = requestAnimationFrame(exhaleFrame);
+    } else {
+      // ── Stop ──
+      exhaleRunning = false;
+      if (exhaleRafId) { cancelAnimationFrame(exhaleRafId); exhaleRafId = null; }
+      exhaleTimeEl.classList.remove('running');
+
+      const secs = parseFloat(exhaleTimeEl.textContent);
+      exhaleResVal.textContent = `${secs.toFixed(1)} sec`;
+      exhaleResult.hidden = false;
+
+      // Personal best this session
+      if (secs > exhaleBest) {
+        exhaleBest = secs;
+        exhaleBestEl.textContent = `🏅 Best this session: ${secs.toFixed(1)} sec`;
+        exhaleBestEl.hidden = false;
+      } else {
+        exhaleBestEl.textContent = `🏅 Best this session: ${exhaleBest.toFixed(1)} sec`;
+        exhaleBestEl.hidden = false;
+      }
+
+      exhaleBtn.textContent = 'Try Again';
+      exhaleBtn.classList.remove('btn-primary');
+      exhaleBtn.classList.add('btn-outline');
+    }
+  });
+
+
+  // ══════════════════════════════════════════════════════════════
   //  VOCAL WARM-UP
   // ══════════════════════════════════════════════════════════════
 
