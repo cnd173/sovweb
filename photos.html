@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Photos & Videos — CLB SOV</title>
+  <meta name="description" content="Photos and videos from CLB SOV sessions and events." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Photos & Videos — CLB SOV" />
+  <meta property="og:description" content="Moments captured from CLB SOV sessions and events." />
+  <meta property="og:type" content="website" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/main.css" />
+
+  <style>
+    /* ── Filter bar ────────────────────────────────────── */
+    .photos-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      margin-bottom: var(--space-6);
+    }
+
+    #photos-filters {
+      display: flex;
+      gap: var(--space-2);
+      flex-wrap: wrap;
+    }
+
+    .photo-filter {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-pill);
+      padding: var(--space-2) var(--space-4);
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+      cursor: pointer;
+      transition: background 0.15s, color 0.15s, border-color 0.15s;
+      font-family: var(--font-body);
+    }
+
+    .photo-filter:hover { border-color: var(--color-primary); color: var(--color-primary); }
+    .photo-filter.active {
+      background: var(--color-primary);
+      border-color: var(--color-primary);
+      color: #fff;
+      font-weight: 600;
+    }
+
+    #photos-counter {
+      font-size: 0.875rem;
+      color: var(--color-text-muted);
+    }
+
+    /* ── Photo grid ────────────────────────────────────── */
+    .photo-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: var(--space-4);
+    }
+
+    .photo-card {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      overflow: hidden;
+      box-shadow: var(--shadow-card);
+      cursor: pointer;
+      transition: transform 0.18s, box-shadow 0.18s;
+      text-decoration: none;
+      color: inherit;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .photo-card:hover {
+      transform: translateY(-3px);
+      box-shadow: var(--shadow-hover);
+    }
+
+    .photo-card__thumb {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background: var(--color-surface-alt);
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .photo-card__thumb img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .photo-card__thumb.no-thumb::after {
+      content: '🖼️';
+      font-size: 2.5rem;
+    }
+
+    .photo-card__thumb.no-thumb img { display: none; }
+
+    .photo-card__play {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(0,0,0,0.35);
+      color: #fff;
+      font-size: 2rem;
+      transition: background 0.15s;
+    }
+
+    .photo-card--video:hover .photo-card__play { background: rgba(0,0,0,0.55); }
+
+    .photo-card__label {
+      font-size: 0.82rem;
+      font-weight: 500;
+      color: var(--color-text);
+      padding: var(--space-2) var(--space-3) 0;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .photo-card__date {
+      font-size: 0.75rem;
+      color: var(--color-text-muted);
+      padding: 2px var(--space-3) var(--space-2);
+    }
+
+    /* ── Lightbox ──────────────────────────────────────── */
+    .lightbox {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      transition: opacity 0.22s;
+    }
+
+    .lightbox--visible { opacity: 1; }
+
+    .lightbox__backdrop {
+      position: absolute;
+      inset: 0;
+      background: rgba(0,0,0,0.82);
+    }
+
+    .lightbox__content {
+      position: relative;
+      z-index: 1;
+      max-width: min(90vw, 960px);
+      max-height: 90vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: var(--space-3);
+    }
+
+    .lightbox__img {
+      max-width: 100%;
+      max-height: 78vh;
+      object-fit: contain;
+      border-radius: var(--radius-md);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+    }
+
+    .lightbox__close {
+      position: absolute;
+      top: -2.5rem;
+      right: 0;
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.4rem;
+      cursor: pointer;
+      opacity: 0.8;
+      line-height: 1;
+    }
+
+    .lightbox__close:hover { opacity: 1; }
+
+    .lightbox__caption {
+      color: #fff;
+      font-size: 0.95rem;
+      text-align: center;
+      max-width: 600px;
+    }
+
+    .lightbox__open-link {
+      color: var(--color-primary-soft);
+      font-size: 0.85rem;
+      text-decoration: underline;
+    }
+
+    /* ── Responsive ────────────────────────────────────── */
+    @media (max-width: 480px) {
+      .photo-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .photo-card, .lightbox { transition: none; }
+      .photo-card:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+
+<noscript>
+  <div class="noscript-msg">This website requires JavaScript to load content from Google Drive. Please enable JavaScript in your browser.</div>
+</noscript>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="container nav__inner">
+    <a href="index.html" class="nav__logo">🎙 <span>CLB</span> SOV</a>
+    <div class="nav__links">
+      <a href="index.html">Home</a>
+      <a href="members.html">Members</a>
+      <a href="board.html">Progress Board</a>
+      <a href="schedule.html">Schedule</a>
+      <a href="finance.html">Finance</a>
+      <a href="rules.html">Rules</a>
+      <a href="photos.html" class="active">Photos & Videos</a>
+    </div>
+    <button class="nav__hamburger" aria-label="Open navigation menu" aria-expanded="false" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav__mobile" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+    <a href="index.html">Home</a>
+    <a href="members.html">Members</a>
+    <a href="board.html">Progress Board</a>
+    <a href="schedule.html">Schedule</a>
+    <a href="finance.html">Finance</a>
+    <a href="rules.html">Rules</a>
+    <a href="photos.html" class="active">Photos & Videos</a>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <header class="page-header">
+      <h1>Photos & Videos</h1>
+      <p>Moments from our sessions — auto-synced from Google Drive.</p>
+    </header>
+
+    <div class="photos-toolbar">
+      <div id="photos-filters"></div>
+      <span id="photos-counter"></span>
+    </div>
+
+    <div id="photos-root" role="status" aria-live="polite" aria-label="Photos and videos"></div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <p class="footer__name">🎙 CLB SOV</p>
+    <p>A community built on sound and story.</p>
+    <div class="footer__links">
+      <a href="members.html">Members</a>
+      <a href="board.html">Progress Board</a>
+      <a href="schedule.html">Schedule</a>
+      <a href="finance.html">Finance</a>
+      <a href="rules.html">Rules</a>
+      <a href="photos.html">Photos & Videos</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/utils.js"></script>
+<script src="js/photos.js"></script>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', isOpen);
+  });
+</script>
+</body>
+</html>

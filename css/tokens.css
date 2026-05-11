@@ -1,0 +1,64 @@
+:root {
+  /* Brand colors */
+  --color-primary:           #E07A5F;
+  --color-primary-soft:      #F2C4B5;
+  --color-primary-dark:      #C45E43;
+  --color-secondary:         #81B29A;
+  --color-secondary-soft:    #C5DDD3;
+  --color-accent:            #F2CC8F;
+  --color-accent-dark:       #D4A84B;
+
+  /* Surfaces */
+  --color-bg:                #FDFAF6;
+  --color-surface:           #FFFFFF;
+  --color-surface-alt:       #F5EFE6;
+  --color-border:            #E8DDD0;
+
+  /* Text */
+  --color-text:              #3D352A;
+  --color-text-muted:        #7A6F63;
+  --color-text-on-primary:   #FFFFFF;
+
+  /* Semantic */
+  --color-error:             #C44B4B;
+  --color-error-soft:        #FAE3E3;
+  --color-success:           #4B8C6E;
+  --color-success-soft:      #DCF0E8;
+  --color-warning:           #B8860B;
+  --color-warning-soft:      #FEF3CD;
+
+  /* Border radius */
+  --radius-sm:    6px;
+  --radius-md:    16px;
+  --radius-lg:    24px;
+  --radius-xl:    32px;
+  --radius-pill:  100px;
+
+  /* Shadows */
+  --shadow-card:  0 2px 12px rgba(61, 53, 42, 0.08);
+  --shadow-hover: 0 6px 20px rgba(61, 53, 42, 0.14);
+  --shadow-sm:    0 1px 4px rgba(61, 53, 42, 0.06);
+
+  /* Spacing */
+  --space-1:  4px;
+  --space-2:  8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-5:  20px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-10: 40px;
+  --space-12: 48px;
+  --space-16: 64px;
+  --space-20: 80px;
+  --space-24: 96px;
+
+  /* Typography */
+  --font-display: 'Fraunces', Georgia, serif;
+  --font-body:    'DM Sans', system-ui, -apple-system, sans-serif;
+  --font-mono:    ui-monospace, 'Cascadia Code', monospace;
+
+  /* Layout */
+  --max-width: 1100px;
+  --nav-height: 64px;
+}

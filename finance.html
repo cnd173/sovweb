@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Finance — CLB SOV</title>
+  <meta name="description" content="Club fund overview, spending history, and sponsorship details." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="Finance — CLB SOV" />
+  <meta property="og:description" content="Club fund overview, spending history, and sponsorship." />
+  <meta property="og:type" content="website" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/main.css" />
+
+  <style>
+    /* ── Finance summary cards ─────────────────────────── */
+    .fin-summary {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: var(--space-4);
+      margin-bottom: var(--space-8);
+    }
+
+    .fin-stat {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      box-shadow: var(--shadow-card);
+      padding: var(--space-5) var(--space-5);
+      text-align: center;
+      border-top: 4px solid var(--color-border);
+    }
+
+    .fin-stat--fund      { border-top-color: var(--color-secondary); }
+    .fin-stat--spent     { border-top-color: var(--color-primary); }
+    .fin-stat--remaining { border-top-color: var(--color-accent); }
+    .fin-stat--sponsor   { border-top-color: #A8DADC; }
+
+    .fin-stat__value {
+      font-family: var(--font-display);
+      font-size: 1.55rem;
+      font-weight: 700;
+      color: var(--color-text);
+      line-height: 1.1;
+      word-break: break-word;
+    }
+
+    .fin-stat--remaining .fin-stat__value { color: var(--color-secondary); }
+    .fin-stat--spent .fin-stat__value     { color: var(--color-primary); }
+
+    .fin-stat__label {
+      font-size: 0.8rem;
+      color: var(--color-text-muted);
+      margin-top: var(--space-2);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+    }
+
+    /* ── Sponsorship note ─────────────────────────────── */
+    .fin-sponsor-box {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-left: 4px solid #A8DADC;
+      border-radius: var(--radius-md);
+      padding: var(--space-5) var(--space-6);
+      margin-bottom: var(--space-8);
+      display: flex;
+      align-items: flex-start;
+      gap: var(--space-4);
+    }
+
+    .fin-sponsor-box__icon {
+      font-size: 1.6rem;
+      flex-shrink: 0;
+    }
+
+    .fin-sponsor-box__body h3 {
+      font-family: var(--font-display);
+      font-size: 1rem;
+      color: var(--color-text);
+      margin-bottom: var(--space-1);
+    }
+
+    .fin-sponsor-box__body p {
+      font-size: 0.9375rem;
+      color: var(--color-text-muted);
+      margin: 0;
+    }
+
+    /* ── Payment history table ────────────────────────── */
+    .fin-section-title {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      color: var(--color-text);
+      margin-bottom: var(--space-4);
+    }
+
+    .fin-table-wrap {
+      overflow-x: auto;
+      border-radius: var(--radius-md);
+      border: 1px solid var(--color-border);
+      box-shadow: var(--shadow-card);
+    }
+
+    .fin-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.9rem;
+      background: var(--color-surface);
+    }
+
+    .fin-table thead {
+      background: var(--color-surface-alt);
+    }
+
+    .fin-table th {
+      padding: var(--space-3) var(--space-4);
+      text-align: left;
+      font-weight: 600;
+      color: var(--color-text-muted);
+      font-size: 0.78rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      white-space: nowrap;
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .fin-table td {
+      padding: var(--space-3) var(--space-4);
+      color: var(--color-text);
+      border-bottom: 1px solid var(--color-border);
+      vertical-align: top;
+    }
+
+    .fin-table tbody tr:last-child td {
+      border-bottom: none;
+    }
+
+    .fin-table tbody tr:hover {
+      background: var(--color-bg);
+    }
+
+    .fin-table td:empty::after {
+      content: '—';
+      color: var(--color-text-muted);
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .fin-stat { transition: none; }
+    }
+  </style>
+</head>
+<body>
+
+<noscript>
+  <div class="noscript-msg">This website requires JavaScript to load content from Google Sheets. Please enable JavaScript in your browser.</div>
+</noscript>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="container nav__inner">
+    <a href="index.html" class="nav__logo">🎙 <span>CLB</span> SOV</a>
+    <div class="nav__links">
+      <a href="index.html">Home</a>
+      <a href="members.html">Members</a>
+      <a href="board.html">Progress Board</a>
+      <a href="schedule.html">Schedule</a>
+      <a href="finance.html" class="active">Finance</a>
+      <a href="rules.html">Rules</a>
+      <a href="photos.html">Photos & Videos</a>
+    </div>
+    <button class="nav__hamburger" aria-label="Open navigation menu" aria-expanded="false" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav__mobile" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+    <a href="index.html">Home</a>
+    <a href="members.html">Members</a>
+    <a href="board.html">Progress Board</a>
+    <a href="schedule.html">Schedule</a>
+    <a href="finance.html" class="active">Finance</a>
+    <a href="rules.html">Rules</a>
+    <a href="photos.html">Photos & Videos</a>
+  </div>
+</nav>
+
+<main>
+  <div class="container">
+    <header class="page-header">
+      <h1>Finance</h1>
+      <p>Club fund overview, spending history, and sponsorship details.</p>
+    </header>
+
+    <!-- Summary cards -->
+    <div id="finance-summary"></div>
+
+    <!-- Sponsorship note -->
+    <div id="finance-sponsor"></div>
+
+    <!-- Payment history -->
+    <div id="finance-root" role="status" aria-live="polite" aria-label="Payment history"></div>
+  </div>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <p class="footer__name">🎙 CLB SOV</p>
+    <p>A community built on sound and story.</p>
+    <div class="footer__links">
+      <a href="members.html">Members</a>
+      <a href="board.html">Progress Board</a>
+      <a href="schedule.html">Schedule</a>
+      <a href="finance.html">Finance</a>
+    </div>
+  </div>
+</footer>
+
+<!-- Scripts -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+<script src="js/config.js"></script>
+<script src="js/utils.js?v=20260511b"></script>
+<script src="js/finance.js?v=20260511b"></script>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', isOpen);
+  });
+</script>
+</body>
+</html>

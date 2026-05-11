@@ -1,0 +1,123 @@
+// Schedule page — loads events from Google Sheets, splits upcoming vs. past
+
+(function () {
+  const root = document.getElementById('schedule-root');
+
+  const STATUS_CHIP = {
+    upcoming:  '<span class="chip chip-secondary">Upcoming</span>',
+    cancelled: '<span class="chip chip-error">Cancelled</span>',
+    past:      '<span class="chip chip-muted">Past</span>',
+  };
+
+  function load() {
+    showLoading(root, 4, 'schedule');
+    fetchCSV(VOICECLUB_CONFIG.sheets.schedule)
+      .then(render)
+      .catch(() => showError(root, null, load));
+  }
+
+  function render(rows) {
+    // Sort by date ascending
+    rows.sort((a, b) => compareDates(a.date, b.date));
+
+    const upcoming = rows.filter(r => {
+      const s = (r.status || '').toLowerCase();
+      return s === 'upcoming' || (s !== 'past' && s !== 'cancelled' && isUpcoming(r.date));
+    });
+
+    const past = rows.filter(r => {
+      const s = (r.status || '').toLowerCase();
+      return s === 'past' || (s !== 'upcoming' && s !== 'cancelled' && !isUpcoming(r.date));
+    });
+
+    const cancelled = rows.filter(r => (r.status || '').toLowerCase() === 'cancelled');
+
+    if (rows.length === 0) {
+      root.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state__icon">📅</div>
+          <h3>No events yet</h3>
+          <p>Check back soon — sessions are being planned!</p>
+        </div>`;
+      return;
+    }
+
+    let html = '';
+
+    // Upcoming + cancelled future
+    const upcomingAndCancelled = [
+      ...upcoming,
+      ...cancelled.filter(r => isUpcoming(r.date)),
+    ].sort((a, b) => compareDates(a.date, b.date));
+
+    if (upcomingAndCancelled.length > 0) {
+      html += `<div class="schedule-list">${upcomingAndCancelled.map(eventCard).join('')}</div>`;
+    } else {
+      html += `
+        <div class="empty-state">
+          <div class="empty-state__icon">📅</div>
+          <h3>No upcoming sessions right now</h3>
+          <p>Check back soon — new sessions are being planned!</p>
+        </div>`;
+    }
+
+    // Past events
+    const pastAll = [...past, ...cancelled.filter(r => !isUpcoming(r.date))]
+      .sort((a, b) => compareDates(b.date, a.date));
+
+    if (pastAll.length > 0) {
+      html += `
+        <div class="past-section">
+          <h2>Past Events</h2>
+          <div>${pastAll.map(pastEventItem).join('')}</div>
+        </div>`;
+    }
+
+    root.innerHTML = html;
+  }
+
+  function eventCard(r) {
+    const statusChip = STATUS_CHIP[(r.status || 'upcoming').toLowerCase()] || STATUS_CHIP.upcoming;
+
+    const meetingBtn = r.meeting_link
+      ? `<div class="event-card__link">
+           <a href="${escHtml(r.meeting_link)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
+             Join Online →
+           </a>
+         </div>`
+      : '';
+
+    return `
+      <div class="event-card">
+        <div class="event-card__date-badge" aria-label="${formatDate(r.date)}">
+          <span class="month">${monthAbbr(r.date)}</span>
+          <span class="day">${dayNum(r.date)}</span>
+        </div>
+        <div class="event-card__body">
+          <div class="event-card__title">
+            ${escHtml(r.title || 'Untitled Event')}
+            ${statusChip}
+          </div>
+          <div class="event-card__info">
+            ${r.time     ? `<span>🕐 ${escHtml(r.time)}</span>` : ''}
+            ${r.location ? `<span>📍 ${escHtml(r.location)}</span>` : ''}
+          </div>
+          ${r.description ? `<p class="event-card__desc">${escHtml(r.description)}</p>` : ''}
+          ${meetingBtn}
+        </div>
+      </div>`;
+  }
+
+  function pastEventItem(r) {
+    return `
+      <div class="past-event-item">
+        <span class="past-event-item__date">${formatDate(r.date)}</span>
+        <span class="past-event-item__title">${escHtml(r.title || 'Untitled Event')}</span>
+        ${(r.status || '').toLowerCase() === 'cancelled'
+          ? '<span class="chip chip-error">Cancelled</span>'
+          : ''}
+      </div>`;
+  }
+
+  document.addEventListener('DOMContentLoaded', load);
+})();

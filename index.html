@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CLB SOV</title>
+  <meta name="description" content="A community built on sound and story. Meet our members, track breath progress, and join upcoming sessions." />
+
+  <!-- Open Graph -->
+  <meta property="og:title" content="CLB SOV" />
+  <meta property="og:description" content="A community built on sound and story." />
+  <meta property="og:type" content="website" />
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,700;1,9..144,400&family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet" />
+
+  <!-- Styles -->
+  <link rel="stylesheet" href="css/reset.css" />
+  <link rel="stylesheet" href="css/tokens.css" />
+  <link rel="stylesheet" href="css/main.css" />
+</head>
+<body>
+
+<noscript>
+  <div class="noscript-msg">This website requires JavaScript to load content from Google Sheets. Please enable JavaScript in your browser.</div>
+</noscript>
+
+<!-- Navigation -->
+<nav class="nav">
+  <div class="container nav__inner">
+    <a href="index.html" class="nav__logo">🎙 <span>CLB</span> SOV</a>
+    <div class="nav__links">
+      <a href="index.html" class="active">Home</a>
+      <a href="members.html">Members</a>
+      <a href="board.html">Progress Board</a>
+      <a href="schedule.html">Schedule</a>
+      <a href="finance.html">Finance</a>
+      <a href="rules.html">Rules</a>
+      <a href="photos.html">Photos & Videos</a>
+    </div>
+    <button class="nav__hamburger" aria-label="Open navigation menu" aria-expanded="false" id="hamburger">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+  <div class="nav__mobile" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
+    <a href="index.html" class="active">Home</a>
+    <a href="members.html">Members</a>
+    <a href="board.html">Progress Board</a>
+    <a href="schedule.html">Schedule</a>
+    <a href="finance.html">Finance</a>
+    <a href="rules.html">Rules</a>
+    <a href="photos.html">Photos & Videos</a>
+  </div>
+</nav>
+
+<!-- Hero -->
+<main>
+  <section class="hero">
+    <div class="container">
+      <p class="hero__eyebrow">Chào mừng đến với</p>
+      <h1>CLB SOV — nơi mỗi <em>hơi thở</em> đều có giá trị</h1>
+      <p class="hero__tagline">Cùng luyện tập, ghi lại tiến trình và cổ vũ nhau phát triển từng ngày.</p>
+      <div class="hero__actions">
+        <a href="board.html" class="btn btn-primary">Bảng thành tích</a>
+        <a href="schedule.html" class="btn btn-outline">Lịch hoạt động</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Feature Cards -->
+  <section class="feature-cards">
+    <div class="container">
+      <div class="card-grid">
+
+        <a href="members.html" class="feature-card">
+          <div class="feature-card__icon feature-card__icon--secondary">👥</div>
+          <h3>Thành Viên</h3>
+          <p>Gặp gỡ tất cả mọi người trong CLB — thông tin, điểm danh và thành tích cá nhân.</p>
+          <span class="feature-card__arrow">Xem thành viên →</span>
+        </a>
+
+        <a href="board.html" class="feature-card">
+          <div class="feature-card__icon feature-card__icon--primary">🏆</div>
+          <h3>Bảng Thành Tích</h3>
+          <p>Theo dõi kỷ lục nhịn thở của từng thành viên và ăn mừng từng bước tiến bộ.</p>
+          <span class="feature-card__arrow">Xem bảng xếp hạng →</span>
+        </a>
+
+        <a href="schedule.html" class="feature-card">
+          <div class="feature-card__icon feature-card__icon--accent">📅</div>
+          <h3>Lịch Hoạt Động</h3>
+          <p>Xem các buổi tập sắp tới và cập nhật lịch — sự kiện mới được thêm thường xuyên.</p>
+          <span class="feature-card__arrow">Xem lịch →</span>
+        </a>
+
+        <a href="finance.html" class="feature-card">
+          <div class="feature-card__icon feature-card__icon--secondary">💰</div>
+          <h3>Tài Chính</h3>
+          <p>Tổng quan quỹ CLB, lịch sử chi tiêu và thông tin tài trợ minh bạch.</p>
+          <span class="feature-card__arrow">Xem tài chính →</span>
+        </a>
+
+        <a href="rules.html" class="feature-card">
+          <div class="feature-card__icon feature-card__icon--primary">📋</div>
+          <h3>Nội Quy</h3>
+          <p>Những quy định mà mọi thành viên đồng ý tuân thủ để CLB hoạt động tốt.</p>
+          <span class="feature-card__arrow">Xem nội quy →</span>
+        </a>
+
+        <a href="photos.html" class="feature-card">
+          <div class="feature-card__icon feature-card__icon--accent">📷</div>
+          <h3>Ảnh & Video</h3>
+          <p>Những khoảnh khắc đáng nhớ từ các buổi tập — tự động cập nhật từ Google Drive.</p>
+          <span class="feature-card__arrow">Xem ảnh & video →</span>
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- About blurb -->
+  <section style="padding: var(--space-16) 0;">
+    <div class="container" style="max-width: 680px; text-align: center;">
+      <p class="hero__eyebrow" style="margin-bottom: var(--space-4);">Về CLB SOV</p>
+      <h2 style="margin-bottom: var(--space-5);">Cùng nhau phát triển, từng hơi thở một</h2>
+      <p style="font-size: 1.0625rem; line-height: 1.8;">CLB SOV là nơi chúng tôi cùng luyện tập và cải thiện khả năng kiểm soát hơi thở. Dù bạn mới bắt đầu hay đang chinh phục kỷ lục mới, mỗi buổi tập đều có giá trị. Chúng tôi gặp gỡ đều đặn, ghi lại tiến trình và cổ vũ nhau cùng tiến bộ.</p>
+    </div>
+  </section>
+</main>
+
+<!-- Footer -->
+<footer class="footer">
+  <div class="container">
+    <p class="footer__name">🎙 CLB SOV</p>
+    <p>A community built on sound and story.</p>
+    <div class="footer__links">
+      <a href="members.html">Members</a>
+      <a href="board.html">Progress Board</a>
+      <a href="schedule.html">Schedule</a>
+      <a href="finance.html">Finance</a>
+      <a href="rules.html">Rules</a>
+      <a href="photos.html">Photos & Videos</a>
+    </div>
+  </div>
+</footer>
+
+<script>
+  const hamburger = document.getElementById('hamburger');
+  const mobileMenu = document.getElementById('mobile-menu');
+  hamburger.addEventListener('click', () => {
+    const isOpen = mobileMenu.classList.toggle('open');
+    hamburger.setAttribute('aria-expanded', isOpen);
+  });
+</script>
+</body>
+</html>
