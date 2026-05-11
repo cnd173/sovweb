@@ -123,14 +123,15 @@ p  { color: var(--color-text-muted); line-height: 1.7; }
 /* ── Footer ────────────────────────────────────────────── */
 .footer {
   margin-top: var(--space-20);
-  padding: var(--space-12) 0;
+  padding: var(--space-12) 0 var(--space-8);
   border-top: 1px solid var(--color-border);
   text-align: center;
+  background: var(--color-bg);
 }
 
 .footer__name {
   font-family: var(--font-display);
-  font-size: 1.1rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--color-primary);
   margin-bottom: var(--space-2);
@@ -143,17 +144,27 @@ p  { color: var(--color-text-muted); line-height: 1.7; }
 
 .footer__links {
   display: flex;
-  gap: var(--space-4);
+  flex-wrap: wrap;
+  gap: var(--space-2) var(--space-5);
   justify-content: center;
-  margin-top: var(--space-4);
+  margin-top: var(--space-5);
+  margin-bottom: var(--space-5);
 }
 
 .footer__links a {
   font-size: 0.875rem;
   color: var(--color-text-muted);
   transition: color 0.2s;
+  white-space: nowrap;
 }
 .footer__links a:hover { color: var(--color-primary); }
+
+.footer__copy {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  opacity: 0.65;
+  margin-top: var(--space-3);
+}
 
 /* ── Buttons ───────────────────────────────────────────── */
 .btn {
