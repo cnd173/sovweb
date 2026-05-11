@@ -46,12 +46,12 @@ const VOICECLUB_CONFIG = {
   // Leave url empty ('') and the button will be greyed out until filled in.
   practice: {
     warmupVideos: [
-      { label: '5 min',  url: '' },
-      { label: '10 min', url: '' },
-      { label: '15 min', url: '' },
-      { label: '20 min', url: '' },
-      { label: '30 min', url: '' },
-      { label: '40 min', url: '' },
+      { label: '5 min',  url: 'https://www.youtube.com/watch?v=YCLyAmXtpfY' },
+      { label: '10 min', url: 'https://www.youtube.com/watch?v=ck1pzgy07ZU' },
+      { label: '15 min', url: 'https://www.youtube.com/watch?v=1f_SVJMRx5s' },
+      { label: '20 min', url: 'https://www.youtube.com/watch?v=3Q9tHGLzILQ' },
+      { label: '30 min', url: 'https://www.youtube.com/watch?v=zU4GoNtenxw' },
+      { label: '40 min', url: 'https://www.youtube.com/watch?v=0KGxK7nHWUc' },
     ],
   },
 };
