@@ -91,7 +91,8 @@
       ? f.thumbnailLink.replace(/=s\d+$/, '=s400')
       : `https://lh3.googleusercontent.com/d/${f.id}=s400`;
     const label    = escHtml(f.name.replace(/\.[^.]+$/, '')); // used for alt/title only
-    const dateStr  = f.createdTime ? formatDate(f.createdTime.slice(0, 10)) : '';
+    const rawDate  = f.takenTime || f.createdTime;           // takenTime = actual capture date
+    const dateStr  = rawDate ? formatDate(rawDate.slice(0, 10)) : '';
     const caption  = dateStr ? `<div class="photo-card__date">${dateStr}</div>` : '';
 
     // Rotation class from videoMediaMetadata.rotation (0, 90, 180, 270)
