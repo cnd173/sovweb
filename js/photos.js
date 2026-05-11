@@ -80,6 +80,9 @@
     root.querySelectorAll('.photo-card[data-type="image"]').forEach(card => {
       card.addEventListener('click', () => openLightbox(card.dataset.id, card.dataset.name));
     });
+
+    // Detect orientation from thumbnail dimensions
+    applyAspectDetection();
   }
 
   function mediaCard(f) {
@@ -111,6 +114,39 @@
         <div class="photo-card__label">${label}</div>
         ${dateStr ? `<div class="photo-card__date">${dateStr}</div>` : ''}
       </div>`;
+  }
+
+  // ── Orientation detection ─────────────────────────────────
+  // After thumbnails load, apply landscape/portrait classes based on natural dimensions.
+  function applyAspectDetection() {
+    root.querySelectorAll('.photo-card__thumb img').forEach(img => {
+      function detect() {
+        const w = img.naturalWidth;
+        const h = img.naturalHeight;
+        if (!w || !h) return;                          // no data yet
+        const thumb = img.closest('.photo-card__thumb');
+        const card  = img.closest('.photo-card');
+        if (!thumb || !card) return;
+
+        if (w > h * 1.15) {
+          // Landscape — span 2 columns, 16:9 thumb
+          card.classList.add('photo-card--landscape');
+          thumb.classList.add('thumb--landscape');
+        } else if (h > w * 1.15) {
+          // Portrait — 9:16 thumb
+          card.classList.add('photo-card--portrait');
+          thumb.classList.add('thumb--portrait');
+        }
+        // else: roughly square → keep default 1:1
+      }
+
+      if (img.complete && img.naturalWidth) {
+        detect();           // already loaded (cached)
+      } else {
+        img.addEventListener('load', detect);
+        img.addEventListener('error', () => {});       // ignore broken images
+      }
+    });
   }
 
   // ── Lightbox ──────────────────────────────────────────────

@@ -212,9 +212,24 @@
       text-decoration: underline;
     }
 
+    /* ── Aspect-ratio variants (detected from thumbnail) ── */
+    .photo-card--landscape {
+      grid-column: span 2;
+    }
+
+    .photo-card__thumb.thumb--landscape {
+      aspect-ratio: 16 / 9;
+    }
+
+    .photo-card__thumb.thumb--portrait {
+      aspect-ratio: 9 / 16;
+    }
+
     /* ── Responsive ────────────────────────────────────── */
     @media (max-width: 480px) {
       .photo-grid { grid-template-columns: repeat(2, 1fr); gap: var(--space-3); }
+      /* landscape still spans both mobile columns = full width */
+      .photo-card--landscape { grid-column: span 2; }
     }
 
     @media (prefers-reduced-motion: reduce) {
