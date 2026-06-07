@@ -129,11 +129,58 @@
       </div>`;
   }
 
+  // Palette for initials avatars — cycles based on name hash
+  const AVATAR_COLORS = ['#E8907A','#89B8A2','#C8A070','#7A9CB0','#A08EC8','#7AAF8A'];
+
+  function initialsAvatar(name, extraClass) {
+    const words   = name.trim().split(/\s+/);
+    const initials = (words.length >= 2
+      ? words[0][0] + words[words.length - 1][0]
+      : (words[0] || '?').slice(0, 2)
+    ).toUpperCase();
+    const colorIdx = name.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) % AVATAR_COLORS.length;
+    const bg = AVATAR_COLORS[colorIdx];
+    return `<div class="member-card__avatar member-card__initials${extraClass ? ' ' + extraClass : ''}" style="background:${bg}" aria-label="${escHtml(initials)}">${escHtml(initials)}</div>`;
+  }
+
+  // Global helper called by onerror attributes — avoids inline quote-escaping issues
+  window._avatarFallback = function (img, initials, bg) {
+    var div = document.createElement('div');
+    div.className = 'member-card__avatar member-card__initials';
+    div.style.background = bg;
+    div.textContent = initials;
+    div.setAttribute('aria-label', initials);
+    if (img.parentNode) img.parentNode.replaceChild(div, img);
+  };
+
+  function avatarHtml(m) {
+    const src = resolvePhotoUrl(m.photoUrl);
+    if (!m.photoUrl || src === VOICECLUB_CONFIG.placeholderAvatar) {
+      return initialsAvatar(m.name);
+    }
+    const words    = m.name.trim().split(/\s+/);
+    const initials = (words.length >= 2
+      ? words[0][0] + words[words.length - 1][0]
+      : (words[0] || '?').slice(0, 2)
+    ).toUpperCase();
+    const colorIdx = m.name.split('').reduce((acc, c) => acc + c.charCodeAt(0), 0) % AVATAR_COLORS.length;
+    const bg = AVATAR_COLORS[colorIdx];
+    return `<img
+      class="member-card__avatar"
+      src="${escHtml(src)}"
+      alt="Photo of ${escHtml(m.name)}"
+      width="72" height="72"
+      loading="lazy"
+      onerror="window._avatarFallback(this,'${escHtml(initials)}','${bg}')"
+    />`;
+  }
+
+  function t(vi, en) { return (window.SOVC_i18n ? window.SOVC_i18n.current() : 'vi') === 'en' ? en : vi; }
+
   function memberCard(m) {
-    const photoSrc = escHtml(resolvePhotoUrl(m.photoUrl));
 
     const sinceLabel = m.joinDate
-      ? `<span class="member-card__meta">Member since ${formatDate(m.joinDate)}</span>`
+      ? `<span class="member-card__meta">${t('Thành viên từ','Member since')} ${formatDate(m.joinDate)}</span>`
       : '';
 
     const rate = m.totalPast > 0 ? Math.round((m.total / m.totalPast) * 100) : 0;
@@ -142,19 +189,19 @@
       <div class="member-stats">
         <div class="stat-item">
           <span class="stat-value">${m.total}/${m.totalPast}</span>
-          <span class="stat-label">Sessions</span>
+          <span class="stat-label">${t('Buổi tập','Sessions')}</span>
         </div>
         <div class="stat-item">
           <span class="stat-value">${rate}%</span>
-          <span class="stat-label">Attendance</span>
+          <span class="stat-label">${t('Tỷ lệ','Attendance')}</span>
         </div>
         <div class="stat-item stat-item--streak">
           <span class="stat-value">${m.streak > 0 ? '🔥' + m.streak : '—'}</span>
-          <span class="stat-label">Streak</span>
+          <span class="stat-label">${t('Chuỗi','Streak')}</span>
         </div>
         <div class="stat-item">
           <span class="stat-value">${m.longest || '—'}</span>
-          <span class="stat-label">Best streak</span>
+          <span class="stat-label">${t('Dài nhất','Best streak')}</span>
         </div>
       </div>
       <div class="attend-dots" title="Weekly attendance (green = attended)">
@@ -169,14 +216,7 @@
 
     return `
       <div class="card member-card">
-        <img
-          class="member-card__avatar"
-          src="${photoSrc}"
-          alt="Photo of ${escHtml(m.name)}"
-          onerror="this.src='${escHtml(VOICECLUB_CONFIG.placeholderAvatar)}'"
-          width="72" height="72"
-          loading="lazy"
-        />
+        ${avatarHtml(m)}
         <div>
           <h2 class="member-card__name">${escHtml(m.name)}</h2>
           ${m.role ? `<span class="chip chip-primary">${escHtml(m.role)}</span>` : ''}

@@ -34,7 +34,9 @@ function parseDate(str) {
  */
 async function fetchCSV(url, options = {}) {
   const { headerRow = 0 } = options;
-  const res = await fetch(url);
+  // Append a timestamp so the browser never serves a stale cached copy of the CSV
+  const bustUrl = url + (url.includes('?') ? '&' : '?') + '_cb=' + Date.now();
+  const res = await fetch(bustUrl, { cache: 'no-store' });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const text = await res.text();
 
@@ -68,7 +70,8 @@ function trimRow(row) {
 
 /** Fetch a CSV and return raw 2D array (no header parsing). */
 async function fetchCSVRaw(url) {
-  const res = await fetch(url);
+  const bustUrl = url + (url.includes('?') ? '&' : '?') + '_cb=' + Date.now();
+  const res = await fetch(bustUrl, { cache: 'no-store' });
   if (!res.ok) throw new Error(`HTTP ${res.status}`);
   const text = await res.text();
   const result = Papa.parse(text, { header: false, skipEmptyLines: false });

@@ -33,36 +33,37 @@
   <div class="container nav__inner">
     <a href="index.html" class="nav__logo">🎙 <span>Soul of</span> Voice Club</a>
     <div class="nav__links">
-      <a href="index.html">Home</a>
-      <a href="members.html" class="active">Members</a>
-      <a href="board.html">Progress Board</a>
-      <a href="schedule.html">Schedule</a>
-      <a href="finance.html">Finance</a>
-      <a href="rules.html">Rules</a>
-      <a href="practice.html">Practice</a>
-      <a href="photos.html">Photos & Videos</a>
+      <a href="index.html" data-vi="Trang chủ" data-en="Home">Trang chủ</a>
+      <a href="members.html" class="active" data-vi="Thành viên" data-en="Members">Thành viên</a>
+      <a href="board.html" data-vi="Bảng thành tích" data-en="Progress Board">Bảng thành tích</a>
+      <a href="schedule.html" data-vi="Lịch hoạt động" data-en="Schedule">Lịch hoạt động</a>
+      <a href="finance.html" data-vi="Tài chính" data-en="Finance">Tài chính</a>
+      <a href="rules.html" data-vi="Nội quy" data-en="Rules">Nội quy</a>
+      <a href="practice.html" data-vi="Luyện tập" data-en="Practice">Luyện tập</a>
+      <a href="photos.html" data-vi="Ảnh &amp; Video" data-en="Photos &amp; Videos">Ảnh &amp; Video</a>
     </div>
+    <button class="lang-toggle" aria-label="Switch language" title="Switch to English">EN</button>
     <button class="nav__hamburger" aria-label="Open navigation menu" aria-expanded="false" id="hamburger">
       <span></span><span></span><span></span>
     </button>
   </div>
   <div class="nav__mobile" id="mobile-menu" role="navigation" aria-label="Mobile navigation">
-    <a href="index.html">Home</a>
-    <a href="members.html" class="active">Members</a>
-    <a href="board.html">Progress Board</a>
-    <a href="schedule.html">Schedule</a>
-    <a href="finance.html">Finance</a>
-    <a href="rules.html">Rules</a>
-    <a href="practice.html">Practice</a>
-    <a href="photos.html">Photos & Videos</a>
+    <a href="index.html" data-vi="Trang chủ" data-en="Home">Trang chủ</a>
+    <a href="members.html" class="active" data-vi="Thành viên" data-en="Members">Thành viên</a>
+    <a href="board.html" data-vi="Bảng thành tích" data-en="Progress Board">Bảng thành tích</a>
+    <a href="schedule.html" data-vi="Lịch hoạt động" data-en="Schedule">Lịch hoạt động</a>
+    <a href="finance.html" data-vi="Tài chính" data-en="Finance">Tài chính</a>
+    <a href="rules.html" data-vi="Nội quy" data-en="Rules">Nội quy</a>
+    <a href="practice.html" data-vi="Luyện tập" data-en="Practice">Luyện tập</a>
+    <a href="photos.html" data-vi="Ảnh &amp; Video" data-en="Photos &amp; Videos">Ảnh &amp; Video</a>
   </div>
 </nav>
 
 <main>
   <div class="container">
     <header class="page-header">
-      <h1>Our Members</h1>
-      <p>The voices, stories, and people that make this club what it is.</p>
+      <h1 data-vi="Thành Viên" data-en="Members">Thành Viên</h1>
+      <p data-vi="Gặp gỡ tất cả mọi người trong CLB — hồ sơ và thành tích." data-en="Meet everyone in the club — profiles and achievements.">Gặp gỡ tất cả mọi người trong CLB — hồ sơ và thành tích.</p>
     </header>
 
     <!-- Dynamic content -->
@@ -74,7 +75,7 @@
 <footer class="footer">
   <div class="container">
     <p class="footer__name">🎙 Soul of Voice Club</p>
-    <p>A community built on sound and story.</p>
+    <p data-vi="Từ Tâm hồn đến Câu chuyện — qua từng hơi thở." data-en="From Soul to Story — through every breath.">Từ Tâm hồn đến Câu chuyện — qua từng hơi thở.</p>
     <div class="footer__links">
       <a href="index.html">Home</a>
       <a href="members.html">Members</a>
@@ -94,7 +95,7 @@
 <script src="js/config.js"></script>
 <script src="js/utils.js?v=20260511f"></script>
 <script src="js/members.js?v=20260511f"></script>
-
+<script src="js/i18n.js"></script>
 <script>
   // Hamburger menu toggle
   const hamburger = document.getElementById('hamburger');

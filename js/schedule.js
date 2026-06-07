@@ -3,11 +3,15 @@
 (function () {
   const root = document.getElementById('schedule-root');
 
-  const STATUS_CHIP = {
-    upcoming:  '<span class="chip chip-secondary">Upcoming</span>',
-    cancelled: '<span class="chip chip-error">Cancelled</span>',
-    past:      '<span class="chip chip-muted">Past</span>',
-  };
+  function t(vi, en) { return (window.SOVC_i18n ? window.SOVC_i18n.current() : 'vi') === 'en' ? en : vi; }
+
+  function getStatusChips() {
+    return {
+      upcoming:  `<span class="chip chip-secondary">${t('Sắp tới','Upcoming')}</span>`,
+      cancelled: `<span class="chip chip-error">${t('Đã huỷ','Cancelled')}</span>`,
+      past:      `<span class="chip chip-muted">${t('Đã qua','Past')}</span>`,
+    };
+  }
 
   function load() {
     showLoading(root, 4, 'schedule');
@@ -36,13 +40,15 @@
       root.innerHTML = `
         <div class="empty-state">
           <div class="empty-state__icon">📅</div>
-          <h3>No events yet</h3>
-          <p>Check back soon — sessions are being planned!</p>
+          <h3>${t('Chưa có sự kiện nào','No events yet')}</h3>
+          <p>${t('Theo dõi nhé — lịch sẽ được cập nhật sớm!','Check back soon — sessions are being planned!')}</p>
         </div>`;
       return;
     }
 
     let html = '';
+
+    const STATUS_CHIP = getStatusChips();
 
     // Upcoming + cancelled future
     const upcomingAndCancelled = [
@@ -51,13 +57,13 @@
     ].sort((a, b) => compareDates(a.date, b.date));
 
     if (upcomingAndCancelled.length > 0) {
-      html += `<div class="schedule-list">${upcomingAndCancelled.map(eventCard).join('')}</div>`;
+      html += `<div class="schedule-list">${upcomingAndCancelled.map(r => eventCard(r, STATUS_CHIP)).join('')}</div>`;
     } else {
       html += `
         <div class="empty-state">
           <div class="empty-state__icon">📅</div>
-          <h3>No upcoming sessions right now</h3>
-          <p>Check back soon — new sessions are being planned!</p>
+          <h3>${t('Chưa có buổi tập sắp tới','No upcoming sessions right now')}</h3>
+          <p>${t('Theo dõi nhé — sự kiện mới đang được lên kế hoạch!','Check back soon — new sessions are being planned!')}</p>
         </div>`;
     }
 
@@ -68,7 +74,7 @@
     if (pastAll.length > 0) {
       html += `
         <div class="past-section">
-          <h2>Past Events</h2>
+          <h2>${t('Đã qua','Past Events')}</h2>
           <div>${pastAll.map(pastEventItem).join('')}</div>
         </div>`;
     }
@@ -76,13 +82,13 @@
     root.innerHTML = html;
   }
 
-  function eventCard(r) {
+  function eventCard(r, STATUS_CHIP) {
     const statusChip = STATUS_CHIP[(r.status || 'upcoming').toLowerCase()] || STATUS_CHIP.upcoming;
 
     const meetingBtn = r.meeting_link
       ? `<div class="event-card__link">
            <a href="${escHtml(r.meeting_link)}" target="_blank" rel="noopener noreferrer" class="btn btn-primary btn-sm">
-             Join Online →
+             ${t('Tham gia Online →','Join Online →')}
            </a>
          </div>`
       : '';
@@ -112,10 +118,14 @@
     return `
       <div class="past-event-item">
         <span class="past-event-item__date">${formatDate(r.date)}</span>
-        <span class="past-event-item__title">${escHtml(r.title || 'Untitled Event')}</span>
-        ${(r.status || '').toLowerCase() === 'cancelled'
-          ? '<span class="chip chip-error">Cancelled</span>'
-          : ''}
+        <div class="past-event-item__body">
+          <span class="past-event-item__title">${escHtml(r.title || 'Untitled Event')}${
+            (r.status || '').toLowerCase() === 'cancelled'
+              ? ' <span class="chip chip-error">Cancelled</span>'
+              : ''
+          }</span>
+          ${r.description ? `<span class="past-event-item__desc">${escHtml(r.description)}</span>` : ''}
+        </div>
       </div>`;
   }
 

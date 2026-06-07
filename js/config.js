@@ -6,7 +6,7 @@
 const VOICECLUB_CONFIG = {
   site: {
     name: 'Soul of Voice Club',
-    tagline: 'A community built on sound and story.',
+    tagline: 'From Soul to Story — through every breath.',
     contact: '',
     socialLinks: [],
   },

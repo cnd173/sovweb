@@ -113,7 +113,15 @@
     const barPct      = groupBest > 0 && s.best !== null ? Math.round((s.best / groupBest) * 100) : 0;
     const noData      = s.best === null;
 
-    const photoSrc = escHtml(resolvePhotoUrl(s.photoUrl));
+    const AVATAR_COLORS = ['#E8907A','#89B8A2','#C8A070','#7A9CB0','#A08EC8','#7AAF8A'];
+    const words   = s.name.trim().split(/\s+/);
+    const initials = (words.length >= 2 ? words[0][0] + words[words.length-1][0] : (words[0]||'?').slice(0,2)).toUpperCase();
+    const colorIdx = s.name.split('').reduce((acc,c) => acc + c.charCodeAt(0), 0) % AVATAR_COLORS.length;
+    const avatarBg = AVATAR_COLORS[colorIdx];
+    const resolvedSrc = resolvePhotoUrl(s.photoUrl);
+    const avatarEl = (!s.photoUrl || resolvedSrc === VOICECLUB_CONFIG.placeholderAvatar)
+      ? `<div class="board-avatar member-card__initials" style="width:52px;height:52px;font-size:1rem;background:${avatarBg}" aria-label="${escHtml(initials)}">${escHtml(initials)}</div>`
+      : `<img class="board-avatar" src="${escHtml(resolvedSrc)}" alt="${escHtml(s.name)}" width="52" height="52" loading="lazy" onerror="window._avatarFallback(this,'${escHtml(initials)}','${avatarBg}')">`;
 
     const improvementChip = (() => {
       if (s.improvement === null) return '';
@@ -131,14 +139,7 @@
       <div class="board-row${noData ? ' no-data' : ''}" data-rank="${rankAttr}" role="listitem">
         <div class="board-rank" data-rank="${rankAttr}" aria-label="Rank ${rank || 'unranked'}">${rankLabel}</div>
 
-        <img
-          class="board-avatar"
-          src="${photoSrc}"
-          alt="${escHtml(s.name)}"
-          onerror="this.src='${escHtml(VOICECLUB_CONFIG.placeholderAvatar)}'"
-          width="52" height="52"
-          loading="lazy"
-        />
+        ${avatarEl}
 
         <div class="board-info">
           <span class="board-name">${escHtml(s.name)}</span>

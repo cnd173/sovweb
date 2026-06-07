@@ -13,7 +13,8 @@
 
     showLoading(root, 6, 'card');
 
-    fetch(scriptUrl)
+    const bustUrl = scriptUrl + (scriptUrl.includes('?') ? '&' : '?') + '_cb=' + Date.now();
+    fetch(bustUrl, { cache: 'no-store' })
       .then(r => {
         if (!r.ok) throw new Error(`HTTP ${r.status}`);
         return r.json();
@@ -79,6 +80,13 @@
     // Lightbox for images
     root.querySelectorAll('.photo-card[data-type="image"]').forEach(card => {
       card.addEventListener('click', () => openLightbox(card.dataset.id, card.dataset.name));
+      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openLightbox(card.dataset.id, card.dataset.name); });
+    });
+
+    // Video modal — plays inline instead of opening Google Drive
+    root.querySelectorAll('.photo-card[data-type="video"]').forEach(card => {
+      card.addEventListener('click', () => openVideoModal(card.dataset.id, card.dataset.name));
+      card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openVideoModal(card.dataset.id, card.dataset.name); });
     });
 
     // Detect orientation from thumbnail dimensions
@@ -101,13 +109,13 @@
 
     if (isVideo) {
       return `
-        <a class="photo-card photo-card--video" href="https://drive.google.com/file/d/${f.id}/view" target="_blank" rel="noopener noreferrer" title="${label}">
+        <div class="photo-card photo-card--video" data-type="video" data-id="${f.id}" data-name="${label}" role="button" tabindex="0" title="${label}">
           <div class="photo-card__thumb">
             <img src="${escHtml(thumbSrc)}" alt="${label}" loading="lazy" class="${rotClass.trim()}" onerror="this.closest('.photo-card__thumb').classList.add('no-thumb')"/>
             <div class="photo-card__play">▶</div>
           </div>
           ${caption}
-        </a>`;
+        </div>`;
     }
 
     return `
@@ -159,6 +167,42 @@
         img.addEventListener('load', detect);
         img.addEventListener('error', () => {});
       }
+    });
+  }
+
+  // ── Video modal ───────────────────────────────────────────
+  function openVideoModal(fileId, name) {
+    const overlay = document.createElement('div');
+    overlay.className = 'lightbox';
+    overlay.innerHTML = `
+      <div class="lightbox__backdrop"></div>
+      <div class="lightbox__content lightbox__content--video">
+        <button class="lightbox__close" aria-label="Close video">✕</button>
+        <div class="lightbox__video-wrap">
+          <iframe
+            src="https://drive.google.com/file/d/${fileId}/preview"
+            allow="autoplay; fullscreen"
+            allowfullscreen
+            title="${escHtml(name)}"
+          ></iframe>
+        </div>
+        <div class="lightbox__caption">${escHtml(name)}</div>
+        <a class="lightbox__open-link" href="https://drive.google.com/file/d/${fileId}/view" target="_blank" rel="noopener noreferrer">Open in Drive ↗</a>
+      </div>`;
+
+    document.body.appendChild(overlay);
+    requestAnimationFrame(() => overlay.classList.add('lightbox--visible'));
+
+    const close = () => {
+      overlay.classList.remove('lightbox--visible');
+      overlay.querySelector('iframe').src = ''; // stop playback
+      setTimeout(() => overlay.remove(), 250);
+    };
+
+    overlay.querySelector('.lightbox__close').addEventListener('click', close);
+    overlay.querySelector('.lightbox__backdrop').addEventListener('click', close);
+    document.addEventListener('keydown', function esc(e) {
+      if (e.key === 'Escape') { close(); document.removeEventListener('keydown', esc); }
     });
   }
 
