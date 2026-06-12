@@ -153,7 +153,37 @@ function escHtml(str) {
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;');
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
+/**
+ * Sanitize a URL for use in href/src — only http(s) URLs pass through.
+ * Blocks javascript:, data:, vbscript: and other dangerous schemes.
+ */
+function safeUrl(url) {
+  const str = String(url || '').trim();
+  if (/^https?:\/\//i.test(str)) return str;
+  return '';
+}
+
+/**
+ * Wire image fallbacks: any <img data-fallback-initials> inside rootEl gets an
+ * error listener that swaps it for an initials avatar. Replaces inline onerror
+ * attributes so the site can run under a strict CSP.
+ */
+function wireAvatarFallbacks(rootEl) {
+  rootEl.querySelectorAll('img[data-fallback-initials]').forEach(img => {
+    img.addEventListener('error', () => {
+      const div = document.createElement('div');
+      div.className = img.dataset.fallbackClass || 'member-card__avatar member-card__initials';
+      div.style.background = img.dataset.fallbackBg || '';
+      if (img.dataset.fallbackStyle) div.style.cssText += ';' + img.dataset.fallbackStyle;
+      div.textContent = img.dataset.fallbackInitials;
+      div.setAttribute('aria-label', img.dataset.fallbackInitials);
+      if (img.parentNode) img.parentNode.replaceChild(div, img);
+    });
+  });
 }
 
 /** Return true if the date string is today or in the future. */

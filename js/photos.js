@@ -20,7 +20,8 @@
         return r.json();
       })
       .then(data => {
-        allFiles = data.files || [];
+        // Only accept well-formed Drive file IDs — they're interpolated into URLs
+        allFiles = (data.files || []).filter(f => /^[A-Za-z0-9_-]+$/.test(f.id || ''));
         renderFilters();
         renderGrid('all');
       })
@@ -30,8 +31,9 @@
             <div class="empty-state__icon">⚠️</div>
             <h3>Couldn't load media</h3>
             <p>The Google Drive folder may be empty or the script may need re-deploying.<br><small style="font-family:monospace">${escHtml(err.message)}</small></p>
-            <button class="btn btn-outline btn-sm" onclick="location.reload()">Try Again</button>
+            <button class="btn btn-outline btn-sm" id="photos-retry">Try Again</button>
           </div>`;
+        root.querySelector('#photos-retry').addEventListener('click', () => location.reload());
       });
   }
 
@@ -89,29 +91,36 @@
       card.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') openVideoModal(card.dataset.id, card.dataset.name); });
     });
 
+    // Hide broken thumbnails (replaces inline onerror handlers)
+    root.querySelectorAll('.photo-card__thumb img').forEach(img => {
+      img.addEventListener('error', () => {
+        const thumb = img.closest('.photo-card__thumb');
+        if (thumb) thumb.classList.add('no-thumb');
+      });
+    });
+
     // Detect orientation from thumbnail dimensions
     applyAspectDetection();
   }
 
   function mediaCard(f) {
     const isVideo  = f.mimeType.startsWith('video/');
-    const thumbSrc = f.thumbnailLink
-      ? f.thumbnailLink.replace(/=s\d+$/, '=s400')
-      : `https://lh3.googleusercontent.com/d/${f.id}=s400`;
+    const thumbSrc = safeUrl(f.thumbnailLink ? f.thumbnailLink.replace(/=s\d+$/, '=s400') : '')
+      || `https://lh3.googleusercontent.com/d/${f.id}=s400`;
     const label    = escHtml(f.name.replace(/\.[^.]+$/, '')); // used for alt/title only
     const rawDate  = f.takenTime || f.createdTime;           // takenTime = actual capture date
     const dateStr  = rawDate ? formatDate(rawDate.slice(0, 10)) : '';
     const caption  = dateStr ? `<div class="photo-card__date">${dateStr}</div>` : '';
 
     // Rotation class from videoMediaMetadata.rotation (0, 90, 180, 270)
-    const rot      = f.rotation || 0;
-    const rotClass = rot ? ` rotate-${rot}` : '';
+    const rot      = parseInt(f.rotation, 10) || 0;
+    const rotClass = [90, 180, 270].includes(rot) ? ` rotate-${rot}` : '';
 
     if (isVideo) {
       return `
-        <div class="photo-card photo-card--video" data-type="video" data-id="${f.id}" data-name="${label}" role="button" tabindex="0" title="${label}">
+        <div class="photo-card photo-card--video" data-type="video" data-id="${escHtml(f.id)}" data-name="${label}" role="button" tabindex="0" title="${label}">
           <div class="photo-card__thumb">
-            <img src="${escHtml(thumbSrc)}" alt="${label}" loading="lazy" class="${rotClass.trim()}" onerror="this.closest('.photo-card__thumb').classList.add('no-thumb')"/>
+            <img src="${escHtml(thumbSrc)}" alt="${label}" loading="lazy" class="${rotClass.trim()}"/>
             <div class="photo-card__play">▶</div>
           </div>
           ${caption}
@@ -119,9 +128,9 @@
     }
 
     return `
-      <div class="photo-card" data-type="image" data-id="${f.id}" data-name="${label}" title="${label}" role="button" tabindex="0">
+      <div class="photo-card" data-type="image" data-id="${escHtml(f.id)}" data-name="${label}" title="${label}" role="button" tabindex="0">
         <div class="photo-card__thumb">
-          <img src="https://lh3.googleusercontent.com/d/${f.id}=s400" alt="${label}" loading="lazy" onerror="this.closest('.photo-card__thumb').classList.add('no-thumb')"/>
+          <img src="https://lh3.googleusercontent.com/d/${escHtml(f.id)}=s400" alt="${label}" loading="lazy"/>
         </div>
         ${caption}
       </div>`;

@@ -118,6 +118,7 @@
     }
 
     root.innerHTML = `<div class="card-grid">${members.map(memberCard).join('')}</div>`;
+    wireAvatarFallbacks(root);
   }
 
   function renderEmpty() {
@@ -143,19 +144,9 @@
     return `<div class="member-card__avatar member-card__initials${extraClass ? ' ' + extraClass : ''}" style="background:${bg}" aria-label="${escHtml(initials)}">${escHtml(initials)}</div>`;
   }
 
-  // Global helper called by onerror attributes — avoids inline quote-escaping issues
-  window._avatarFallback = function (img, initials, bg) {
-    var div = document.createElement('div');
-    div.className = 'member-card__avatar member-card__initials';
-    div.style.background = bg;
-    div.textContent = initials;
-    div.setAttribute('aria-label', initials);
-    if (img.parentNode) img.parentNode.replaceChild(div, img);
-  };
-
   function avatarHtml(m) {
-    const src = resolvePhotoUrl(m.photoUrl);
-    if (!m.photoUrl || src === VOICECLUB_CONFIG.placeholderAvatar) {
+    const src = safeUrl(resolvePhotoUrl(m.photoUrl));
+    if (!m.photoUrl || !src) {
       return initialsAvatar(m.name);
     }
     const words    = m.name.trim().split(/\s+/);
@@ -171,7 +162,8 @@
       alt="Photo of ${escHtml(m.name)}"
       width="72" height="72"
       loading="lazy"
-      onerror="window._avatarFallback(this,'${escHtml(initials)}','${bg}')"
+      data-fallback-initials="${escHtml(initials)}"
+      data-fallback-bg="${escHtml(bg)}"
     />`;
   }
 

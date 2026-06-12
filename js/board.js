@@ -98,6 +98,8 @@
         ${stats.map((s, i) => boardRow(s, i, groupBest)).join('')}
       </div>`;
 
+    wireAvatarFallbacks(root);
+
     // Animate bars after render
     requestAnimationFrame(() => {
       document.querySelectorAll('.board-bar[data-width]').forEach(bar => {
@@ -118,10 +120,10 @@
     const initials = (words.length >= 2 ? words[0][0] + words[words.length-1][0] : (words[0]||'?').slice(0,2)).toUpperCase();
     const colorIdx = s.name.split('').reduce((acc,c) => acc + c.charCodeAt(0), 0) % AVATAR_COLORS.length;
     const avatarBg = AVATAR_COLORS[colorIdx];
-    const resolvedSrc = resolvePhotoUrl(s.photoUrl);
-    const avatarEl = (!s.photoUrl || resolvedSrc === VOICECLUB_CONFIG.placeholderAvatar)
+    const resolvedSrc = safeUrl(resolvePhotoUrl(s.photoUrl));
+    const avatarEl = (!s.photoUrl || !resolvedSrc)
       ? `<div class="board-avatar member-card__initials" style="width:52px;height:52px;font-size:1rem;background:${avatarBg}" aria-label="${escHtml(initials)}">${escHtml(initials)}</div>`
-      : `<img class="board-avatar" src="${escHtml(resolvedSrc)}" alt="${escHtml(s.name)}" width="52" height="52" loading="lazy" onerror="window._avatarFallback(this,'${escHtml(initials)}','${avatarBg}')">`;
+      : `<img class="board-avatar" src="${escHtml(resolvedSrc)}" alt="${escHtml(s.name)}" width="52" height="52" loading="lazy" data-fallback-initials="${escHtml(initials)}" data-fallback-bg="${escHtml(avatarBg)}" data-fallback-class="board-avatar member-card__initials" data-fallback-style="width:52px;height:52px;font-size:1rem">`;
 
     const improvementChip = (() => {
       if (s.improvement === null) return '';

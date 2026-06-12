@@ -164,6 +164,7 @@
 
   function weekEvent(r) {
     const isCancelled = (r.status || '').toLowerCase() === 'cancelled';
+    const link = safeUrl(r.meeting_link);
     return `
       <div class="week-event${isCancelled ? ' week-event--cancelled' : ''}">
         ${isCancelled
@@ -173,8 +174,8 @@
         ${r.time        ? `<div class="week-event__meta">🕐 ${escHtml(r.time)}</div>` : ''}
         ${r.location    ? `<div class="week-event__meta">📍 ${escHtml(r.location)}</div>` : ''}
         ${r.description ? `<div class="week-event__desc">${escHtml(r.description)}</div>` : ''}
-        ${r.meeting_link
-          ? `<a href="${escHtml(r.meeting_link)}" target="_blank" rel="noopener noreferrer" class="week-event__link">${t('Tham gia →','Join →')}</a>`
+        ${link
+          ? `<a href="${escHtml(link)}" target="_blank" rel="noopener noreferrer" class="week-event__link">${t('Tham gia →','Join →')}</a>`
           : ''}
       </div>`;
   }
