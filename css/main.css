@@ -832,7 +832,200 @@ p  { color: var(--color-text-muted); line-height: 1.7; }
   margin-top: var(--space-4);
 }
 
-/* Past events */
+/* ── Schedule Month / Week Grid ────────────────────────── */
+.month-section {
+  margin-bottom: var(--space-12);
+}
+
+.month-section--past {
+  opacity: 0.7;
+}
+
+.month-header {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--color-text);
+  margin-bottom: var(--space-5);
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  text-transform: capitalize;
+}
+
+.month-header::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.week-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: var(--space-4);
+}
+
+.week-block {
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-card);
+  padding: var(--space-5);
+  border: 2px solid transparent;
+  transition: box-shadow 0.2s, border-color 0.2s;
+  min-height: 100px;
+}
+
+.week-block--active {
+  border-color: var(--color-primary);
+  background: linear-gradient(135deg, #fff9f7 0%, var(--color-primary-soft) 100%);
+  box-shadow: var(--shadow-hover);
+}
+
+.week-block--past {
+  background: var(--color-surface-alt);
+  box-shadow: none;
+}
+
+.week-block--empty {
+  border: 2px dashed var(--color-border);
+  box-shadow: none;
+}
+
+.week-block--past.week-block--empty {
+  background: transparent;
+}
+
+.week-block__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--space-1);
+}
+
+.week-num {
+  font-size: 0.6875rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-text-muted);
+}
+
+.week-block--active .week-num {
+  color: var(--color-primary-dark);
+}
+
+.week-badge {
+  font-size: 0.625rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  background: var(--color-primary);
+  color: #fff;
+  padding: 2px 8px;
+  border-radius: var(--radius-pill);
+}
+
+.week-date-range {
+  font-size: 0.75rem;
+  color: var(--color-text-muted);
+  margin-bottom: var(--space-3);
+}
+
+.week-block--active .week-date-range {
+  color: var(--color-primary-dark);
+  font-weight: 500;
+}
+
+.week-event {
+  background: rgba(255,255,255,0.75);
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-3);
+  margin-top: var(--space-2);
+}
+
+.week-block--active .week-event {
+  background: rgba(255,255,255,0.9);
+}
+
+.week-event--cancelled {
+  opacity: 0.55;
+}
+
+.week-event__title {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--color-text);
+  line-height: 1.35;
+  margin-bottom: var(--space-1);
+}
+
+.week-event__meta {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  line-height: 1.6;
+}
+
+.week-event__desc {
+  font-size: 0.78rem;
+  color: var(--color-text-muted);
+  margin-top: var(--space-1);
+  line-height: 1.5;
+}
+
+.week-event__link {
+  display: inline-block;
+  margin-top: var(--space-2);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--color-primary-dark);
+  text-decoration: none;
+}
+
+.week-event__link:hover { text-decoration: underline; }
+
+.week-empty-msg {
+  font-size: 0.8rem;
+  color: var(--color-border);
+  font-style: italic;
+}
+
+/* Past months toggle */
+.past-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  width: 100%;
+  margin: var(--space-8) 0 var(--space-6);
+  cursor: pointer;
+  border: none;
+  background: none;
+  padding: 0;
+  font-family: var(--font-body);
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--color-text-muted);
+  text-align: left;
+}
+
+.past-toggle::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--color-border);
+}
+
+.past-toggle__arrow {
+  font-size: 0.7rem;
+  transition: transform 0.2s;
+  margin-left: auto;
+}
+
+.past-toggle.open .past-toggle__arrow { transform: rotate(180deg); }
+
+.past-months { display: none; }
+.past-months.visible { display: block; }
+
+/* Past events (legacy — kept in case referenced elsewhere) */
 .past-section {
   margin-top: var(--space-12);
 }
@@ -985,6 +1178,7 @@ noscript .noscript-msg {
   .event-card { flex-direction: column; }
   .event-card__date-badge { width: 100%; display: flex; gap: var(--space-2); align-items: center; padding: var(--space-2) var(--space-3); }
   .event-card__date-badge .day { font-size: 1.2rem; }
+  .week-grid { grid-template-columns: 1fr; }
 }
 
 /* ── Reduced motion ────────────────────────────────────── */
