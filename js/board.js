@@ -10,30 +10,74 @@
 
     Promise.all([
       fetchCSV(VOICECLUB_CONFIG.sheets.members),
-      fetchCSV(VOICECLUB_CONFIG.sheets.progress),
+      fetchCSVRaw(VOICECLUB_CONFIG.sheets.progress),
     ])
-      .then(([members, progress]) => render(members, progress))
+      .then(([members, progressRaw]) => render(members, progressRaw))
       .catch(() => showError(root, null, load));
   }
 
-  function render(members, progressRows) {
+  // Parse matrix format (auto-detects layout):
+  //   Row 0: old headers (ignored)
+  //   Row 1: [blank, blank, date1, date2, ...]  ← first row with date cells
+  //   Row 2+: [STT?, name, val1, val2, ...]
+  //
+  // Detection: scan row 1 for the first cell that parses as a date — that
+  // column is dateStartCol. Name lives in dateStartCol - 1.
+  function parseProgressMatrix(allRows) {
+    const byMember = {};
+    let totalEntries = 0;
+    if (allRows.length < 3) return { byMember, totalEntries };
+
+    // Find date header row (first row that contains at least one parseable date)
+    let dateRowIdx = -1, dateStartCol = -1;
+    for (let i = 0; i < Math.min(allRows.length, 5); i++) {
+      for (let j = 0; j < allRows[i].length; j++) {
+        if (parseDate((allRows[i][j] || '').trim())) {
+          dateRowIdx  = i;
+          dateStartCol = j;
+          break;
+        }
+      }
+      if (dateRowIdx >= 0) break;
+    }
+    if (dateRowIdx < 0 || dateStartCol < 1) return { byMember, totalEntries };
+
+    const nameCol = dateStartCol - 1;
+    const dateRow = allRows[dateRowIdx];
+    const dates   = dateRow.slice(dateStartCol).map(d => (d || '').trim());
+
+    for (let i = dateRowIdx + 1; i < allRows.length; i++) {
+      const row  = allRows[i];
+      const name = (row[nameCol] || '').trim();
+      if (!name) continue;
+      byMember[name] = byMember[name] || [];
+      for (let j = 0; j < dates.length; j++) {
+        const dateStr = dates[j];
+        const val     = (row[dateStartCol + j] || '').trim();
+        if (!val || !dateStr || !parseDate(dateStr)) continue;
+        const secs = parseFloat(val);
+        if (isNaN(secs) || secs <= 0) continue;
+        byMember[name].push({ date: dateStr, seconds: secs });
+        totalEntries++;
+      }
+    }
+    return { byMember, totalEntries };
+  }
+
+  function render(members, progressRaw) {
     // Only active members
     const activeMembers = members.filter(m => (m.active || '').toUpperCase() === 'TRUE');
 
-    // Group progress rows by member name (case-insensitive trim)
-    const byMember = {};
-    progressRows.forEach(row => {
-      const name = (row.name || row.member || '').trim();
-      const secs = parseFloat(row.seconds);
-      if (!name || isNaN(secs) || secs <= 0) return;
-      if (!byMember[name]) byMember[name] = [];
-      byMember[name].push({ date: row.date || '', seconds: secs, notes: row.notes || '' });
-    });
+    const { byMember, totalEntries } = parseProgressMatrix(progressRaw);
+
+    // Build case-insensitive lookup for name matching
+    const byMemberLower = {};
+    Object.keys(byMember).forEach(k => { byMemberLower[k.toLowerCase()] = byMember[k]; });
 
     // Build stats per member
     const stats = activeMembers.map(m => {
       const name = (m.name || '').trim();
-      const records = (byMember[name] || []).sort((a, b) => compareDates(a.date, b.date));
+      const records = (byMemberLower[name.toLowerCase()] || []).sort((a, b) => compareDates(a.date, b.date));
       const best    = records.length ? Math.max(...records.map(r => r.seconds)) : null;
       const first   = records.length ? records[0].seconds : null;
       const bestRec = records.find(r => r.seconds === best) || null;
@@ -72,7 +116,7 @@
     const withData    = stats.filter(s => s.best !== null);
     const groupBest   = withData.length ? Math.max(...withData.map(s => s.best)) : 0;
     const avgBest     = withData.length ? withData.reduce((s, m) => s + m.best, 0) / withData.length : 0;
-    const totalLogs   = progressRows.length;
+    const totalLogs   = totalEntries;
 
     summary.innerHTML = `
       <div class="summary-stat">
