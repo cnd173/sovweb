@@ -1,6 +1,7 @@
 // ─────────────────────────────────────────────────────────────────────────────
 // VOICE CLUB — Configuration (Soul of Voice Club)
-// Spreadsheet: Soul of Voice Club  |  Published via File > Share > Publish to the web
+// Spreadsheet: CLB SOV - bang nhap  |  only the web-* tabs are published (File > Share > Publish to the web).
+// The web-* tabs are rebuilt hourly by an Apps Script from the entry tabs, without private columns.
 // ─────────────────────────────────────────────────────────────────────────────
 
 const VOICECLUB_CONFIG = {
@@ -12,21 +13,21 @@ const VOICECLUB_CONFIG = {
   },
 
   sheets: {
-    // Tab: members  (gid 1249376586)
+    // Tab: web-members  (gid 601196502)
     members:
-      'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYG8HtxYkQkatuT0TEyqgYxBLR-k_fDE3bQyLWlXKjRgqGfsC97ISH9NkZgTPEP5lfDaIm-jBHmSrq/pub?gid=1249376586&single=true&output=csv',
-    // Tab: progress  (gid 201434808)
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ33WilGREy9_TukQoceSLHfrsd0rov2tO3mV_2q9LSxGRncN7OtevxAC5gkFZapO9_EXXy9DEy465x/pub?gid=601196502&single=true&output=csv',
+    // Tab: web-progress  (gid 1994178462)
     progress:
-      'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYG8HtxYkQkatuT0TEyqgYxBLR-k_fDE3bQyLWlXKjRgqGfsC97ISH9NkZgTPEP5lfDaIm-jBHmSrq/pub?gid=201434808&single=true&output=csv',
-    // Tab: schedule  (gid 917830098)
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ33WilGREy9_TukQoceSLHfrsd0rov2tO3mV_2q9LSxGRncN7OtevxAC5gkFZapO9_EXXy9DEy465x/pub?gid=1994178462&single=true&output=csv',
+    // Tab: web-schedule  (gid 149389168)
     schedule:
-      'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYG8HtxYkQkatuT0TEyqgYxBLR-k_fDE3bQyLWlXKjRgqGfsC97ISH9NkZgTPEP5lfDaIm-jBHmSrq/pub?gid=917830098&single=true&output=csv',
-    // Tab: finance  (gid 674234012)
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ33WilGREy9_TukQoceSLHfrsd0rov2tO3mV_2q9LSxGRncN7OtevxAC5gkFZapO9_EXXy9DEy465x/pub?gid=149389168&single=true&output=csv',
+    // Tab: web-finance  (gid 1943043928)
     finance:
-      'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYG8HtxYkQkatuT0TEyqgYxBLR-k_fDE3bQyLWlXKjRgqGfsC97ISH9NkZgTPEP5lfDaIm-jBHmSrq/pub?gid=674234012&single=true&output=csv',
-    // Tab: rules  (gid 1842522860)
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ33WilGREy9_TukQoceSLHfrsd0rov2tO3mV_2q9LSxGRncN7OtevxAC5gkFZapO9_EXXy9DEy465x/pub?gid=1943043928&single=true&output=csv',
+    // Tab: web-rules  (gid 685147897)
     rules:
-      'https://docs.google.com/spreadsheets/d/e/2PACX-1vRYG8HtxYkQkatuT0TEyqgYxBLR-k_fDE3bQyLWlXKjRgqGfsC97ISH9NkZgTPEP5lfDaIm-jBHmSrq/pub?gid=1842522860&single=true&output=csv',
+      'https://docs.google.com/spreadsheets/d/e/2PACX-1vQ33WilGREy9_TukQoceSLHfrsd0rov2tO3mV_2q9LSxGRncN7OtevxAC5gkFZapO9_EXXy9DEy465x/pub?gid=685147897&single=true&output=csv',
   },
 
   // Dates to exclude from session counting (holidays, cancellations) — D/M/YYYY format
